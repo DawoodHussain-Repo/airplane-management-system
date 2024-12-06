@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 
 const ProfileUpdate = () => {
   const [userData, setUserData] = useState({
@@ -18,37 +19,94 @@ const ProfileUpdate = () => {
     },
   });
 
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Fetch existing profile data dynamically based on logged-in crew email
+  const fetchProfile = async (crewEmail) => {
+    try {
+      const response = await fetch(`http://localhost:5000/api/crew/getProfile/${crewEmail}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch profile data.");
+      }
+      const data = await response.json();
+      setUserData({
+        name: data.name,
+        email: data.email,
+        phone: data.phone,
+        emergencyContactName: data.emergencyContactName,
+        emergencyContactPhone: data.emergencyContactPhone,
+        availability: data.availability,
+      });
+    } catch (error) {
+      console.error("Error fetching profile data:", error);
+    }
+  };
+
+  useEffect(() => {
+    const crewEmail = localStorage.getItem("crewEmail"); // Get crew email from localStorage
+    if (crewEmail) {
+      fetchProfile(crewEmail); // Fetch profile using the email from localStorage
+    } else {
+      console.error("No crew email found in localStorage.");
+    }
+  }, []);
 
   // Handle input changes
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     if (name.includes("availability")) {
-      const [day, time] = name.split("-");
-      setUserData({
-        ...userData,
+      const [_, day, time] = name.split("-");
+      setUserData((prevData) => ({
+        ...prevData,
         availability: {
-          ...userData.availability,
+          ...prevData.availability,
           [day]: {
-            ...userData.availability[day],
+            ...prevData.availability[day],
             [time]: value,
           },
         },
-      });
+      }));
     } else {
-      setUserData({
-        ...userData,
+      setUserData((prevData) => ({
+        ...prevData,
         [name]: value,
-      });
+      }));
     }
   };
 
   // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage("Profile updated successfully!");
-    // You can implement the API call to save updated data here.
-    // For example: fetch('/api/updateProfile', { method: 'POST', body: JSON.stringify(userData) });
+    setLoading(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/crew/updateProfile", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(userData),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to update profile.");
+      }
+      const data = await response.json();
+      Swal.fire({
+        icon: "success",
+        title: "Profile Updated",
+        text: data.message,
+        showConfirmButton: false,
+        timer: 2000,
+      });
+      // Refresh the profile data to reflect changes
+      fetchProfile(userData.email);
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Update Failed",
+        text: "An error occurred while updating your profile. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -134,19 +192,15 @@ const ProfileUpdate = () => {
         <div className="flex justify-center">
           <button
             type="submit"
-            className="bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600 transition duration-200"
+            className={`bg-yellow-500 text-white px-6 py-3 rounded-md hover:bg-yellow-600 transition duration-200 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+            disabled={loading}
           >
-            Update Profile
+            {loading ? "Updating..." : "Update Profile"}
           </button>
         </div>
       </form>
-
-      {/* Display Success Message */}
-      {message && (
-        <div className="mt-6 text-center text-green-400">
-          <p>{message}</p>
-        </div>
-      )}
     </div>
   );
 };

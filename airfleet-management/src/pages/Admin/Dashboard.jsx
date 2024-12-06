@@ -1,22 +1,64 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaHome } from "react-icons/fa";
+import { useNavigate } from 'react-router-dom';  // For redirection after failed auth
 
 const Dashboard = () => {
-  // State to toggle sidebar visibility
+  const [stats, setStats] = useState({
+    activeFlights: 0,
+    totalPassengers: 0,
+    pendingCrewRequests: 0,
+    totalFlights: 0,
+    onTimeFlights: 0,
+  });
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const navigate = useNavigate();  // Initialize useNavigate for redirection
+
+  // Fetch data for the dashboard
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        // Get the token from localStorage (or sessionStorage)
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+          // If there's no token, redirect the user to the login page
+          navigate("/login");
+          return;
+        }
+
+        const response = await fetch('http://localhost:5000/api/admin/dashboard', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Attach token in the header
+          }
+        });
+
+        if (response.status === 401 || response.status === 403) {
+          // If the response status is Unauthorized or Forbidden, redirect to login
+          navigate("/login");
+        }
+
+        const data = await response.json();
+        if (data && data.data) {
+          setStats(data.data); // Set the stats from the API response
+        } else {
+          console.error("No data received");
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+        // If an error occurs, handle it by redirecting to the login page
+        navigate("/login");
+      }
+    };
+
+    fetchDashboardData();
+  }, [navigate]);
 
   // Toggle the sidebar visibility
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-  };
-
-  // Mock statistics (replace with real data from an API or database)
-  const stats = {
-    activeFlights: 12,
-    totalPassengers: 1250,
-    pendingCrewRequests: 8,
-    totalFlights: 50,
-    onTimeFlights: 45,
   };
 
   return (
@@ -35,7 +77,6 @@ const Dashboard = () => {
           <FaHome />
           Home
         </button>
-        {/* Add additional sidebar content here */}
       </div>
 
       {/* Main Content */}

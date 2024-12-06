@@ -1,48 +1,46 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 const FlightStatusManagement = () => {
-  const flights = [
-    {
-      id: 1,
-      flightNumber: "AF123",
-      departureTime: "2024-12-01 08:30 AM",
-      destination: "New York (JFK)",
-      status: "Upcoming",
-    },
-    {
-      id: 2,
-      flightNumber: "AF456",
-      departureTime: "2024-12-03 02:45 PM",
-      destination: "Los Angeles (LAX)",
-      status: "Upcoming",
-    },
-    {
-      id: 3,
-      flightNumber: "AF789",
-      departureTime: "2024-11-28 11:15 AM",
-      destination: "Chicago (ORD)",
-      status: "Completed",
-    },
-  ];
-
+  const [flights, setFlights] = useState([]);
   const [selectedFlight, setSelectedFlight] = useState(null);
-  const [milestone, setMilestone] = useState("");
+  const [milestone, setMilestone] = useState('');
   const [statusUpdates, setStatusUpdates] = useState([]);
-  const [updateMessage, setUpdateMessage] = useState("");
+  const [updateMessage, setUpdateMessage] = useState('');
 
-  // Handle milestone update submission
+  useEffect(() => {
+    // Fetch all flights from the backend
+    axios.get('http://localhost:5000/api/flights')
+      .then(response => setFlights(response.data))
+      .catch(error => console.error('Error fetching flights:', error));
+  }, []);
+
+  // Handle the form submission to update flight status
   const handleSubmit = (e) => {
     e.preventDefault();
     if (selectedFlight && milestone) {
-      const newStatus = `${milestone} - ${new Date().toLocaleString()}`;
-      setStatusUpdates((prevUpdates) => [
-        ...prevUpdates,
-        { flightNumber: selectedFlight.flightNumber, status: newStatus },
-      ]);
-      setUpdateMessage(`Milestone "${milestone}" has been updated for flight ${selectedFlight.flightNumber}.`);
-      setMilestone(""); // Reset the milestone input
+      const updatedStatus = {
+        status: milestone,
+        location: "40.7128° N, 74.0060° W",  // You can dynamically update this as well
+        speed: "900 km/h",  // You can dynamically update this as well
+        altitude: "36,000 ft",  // You can dynamically update this as well
+      };
+
+      axios.put(`http://localhost:5000/api/flights/${selectedFlight._id}`, updatedStatus)
+        .then(response => {
+          setUpdateMessage(`Milestone "${milestone}" has been updated for flight ${selectedFlight.flightNumber}.`);
+          setStatusUpdates(prevUpdates => [
+            ...prevUpdates,
+            { flightNumber: selectedFlight.flightNumber, status: `${milestone} - ${new Date().toLocaleString()}` }
+          ]);
+          setMilestone(""); // Reset milestone input
+        })
+        .catch(error => {
+          console.error('Error updating flight status:', error);
+          setUpdateMessage('Error updating flight status. Please try again.');
+        });
     } else {
-      setUpdateMessage("Please select a flight and milestone.");
+      setUpdateMessage('Please select a flight and milestone.');
     }
   };
 
@@ -52,10 +50,10 @@ const FlightStatusManagement = () => {
         {/* Sidebar for flight selection */}
         <div className="w-full md:w-1/3 bg-gray-800 p-6 rounded-lg shadow-lg">
           <h2 className="text-2xl font-bold mb-4">Select Flight</h2>
-          <div className="space-y-4">
+          <div className="space-y-4 overflow-y-auto max-h-[500px]"> {/* Scrollable container */}
             {flights.map((flight) => (
               <div
-                key={flight.id}
+                key={flight._id}
                 className="border p-4 rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer"
                 onClick={() => setSelectedFlight(flight)}
               >
@@ -133,4 +131,5 @@ const FlightStatusManagement = () => {
     </div>
   );
 };
+
 export default FlightStatusManagement;

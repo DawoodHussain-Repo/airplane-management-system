@@ -1,26 +1,115 @@
-import React, { useState } from "react";
-
-// Sample data to represent notification history (in a real app, this would be fetched from an API)
-const initialNotifications = [
-  { id: 1, message: "Flight AF100 has been delayed by 1 hour.", type: "Important", date: new Date().toLocaleString() },
-  { id: 2, message: "Your boarding gate for AF200 has changed.", type: "Info", date: new Date().toLocaleString() },
-  { id: 3, message: "Flight AF300 has been cancelled.", type: "Critical", date: new Date().toLocaleString() },
-];
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const NotificationManagement = () => {
-  const [notifications, setNotifications] = useState(initialNotifications);
-  const [newNotification, setNewNotification] = useState({ message: "", type: "Important" });
+  const [notifications, setNotifications] = useState([]);
+  const [newNotification, setNewNotification] = useState({
+    message: "",
+    type: "Important",
+    _id: "",
+  });
   const [alertSettings, setAlertSettings] = useState({ enableNotifications: true });
+  const [loading, setLoading] = useState(false);
+  const [users, setUsers] = useState([]);
+  const [selectedUserId, setSelectedUserId] = useState("");
 
-  // Handle notification creation
-  const handleSendNotification = () => {
+  const apiUrl = "http://localhost:5000/api/notifications";
+  const usersApiUrl = "http://localhost:5000/api/users";
+
+  // Fetch users to populate the dropdown
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get(usersApiUrl);
+        setUsers(response.data);
+      } catch (error) {
+        console.error("Error fetching users", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  // Fetch notifications for the selected user
+  useEffect(() => {
+    if (selectedUserId) {
+      const fetchNotifications = async () => {
+        try {
+          setLoading(true);
+          const response = await axios.get(`${apiUrl}/${selectedUserId}`);
+          setNotifications(response.data);
+          setLoading(false);
+        } catch (error) {
+          console.error("Error fetching notifications", error);
+          setLoading(false);
+        }
+      };
+
+      fetchNotifications();
+    }
+  }, [selectedUserId]);
+
+  // Handle notification creation or editing
+  const handleSendNotification = async () => {
+    if (!selectedUserId) {
+      alert("Please select a user.");
+      return;
+    }
+
     if (!newNotification.message) {
       alert("Please enter a notification message.");
       return;
     }
-    const newNotificationObj = { ...newNotification, id: Date.now(), date: new Date().toLocaleString() };
-    setNotifications((prevNotifications) => [...prevNotifications, newNotificationObj]);
-    setNewNotification({ message: "", type: "Important" });
+
+    try {
+      if (newNotification._id) {
+        // Update the existing notification
+        const response = await axios.put(`${apiUrl}/${newNotification._id}`, {
+          userId: selectedUserId,
+          message: newNotification.message,
+          type: newNotification.type,
+        });
+        setNotifications((prevNotifications) =>
+          prevNotifications.map((notification) =>
+            notification._id === newNotification._id ? response.data.notification : notification
+          )
+        );
+      } else {
+        // Create a new notification
+        const response = await axios.post(apiUrl, {
+          userId: selectedUserId,
+          message: newNotification.message,
+          type: newNotification.type,
+        });
+        setNotifications((prevNotifications) => [
+          ...prevNotifications,
+          response.data.notification,
+        ]);
+      }
+      setNewNotification({ message: "", type: "Important", _id: "" });
+    } catch (error) {
+      console.error("Error sending notification", error);
+    }
+  };
+
+  // Handle editing a notification
+  const handleEditNotification = (notificationId) => {
+    const notificationToEdit = notifications.find(
+      (notification) => notification._id === notificationId
+    );
+    if (notificationToEdit) {
+      setNewNotification({ ...notificationToEdit });
+    }
+  };
+
+  // Handle notification deletion
+  const handleDeleteNotification = async (notificationId) => {
+    try {
+      await axios.delete(`${apiUrl}/${notificationId}`);
+      setNotifications(notifications.filter((notification) => notification._id !== notificationId));
+    } catch (error) {
+      console.error("Error deleting notification", error);
+    }
   };
 
   // Handle changes in notification settings (turning notifications on/off)
@@ -33,86 +122,109 @@ const NotificationManagement = () => {
   const getNotificationColor = (type) => {
     switch (type) {
       case "Important":
-        return "bg-yellow-500 text-white"; // Yellow for important
+        return "bg-yellow-600 text-gray-900";
       case "Info":
-        return "bg-blue-500 text-white"; // Blue for info
+        return "bg-blue-600 text-white";
       case "Critical":
-        return "bg-red-500 text-white"; // Red for critical
+        return "bg-red-600 text-white";
       default:
-        return "bg-gray-500 text-white"; // Default gray
+        return "bg-gray-600 text-white";
     }
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-900 to-gray-700 min-h-[600px] flex flex-col md:flex-row">
+    <div className="p-6 bg-gradient-to-br from-gray-00 to-gray-700 min-h-[600px] flex flex-col md:flex-row">
       {/* Notification Form */}
       <div className="w-full md:w-1/3 bg-gray-800 p-6 rounded-lg shadow-lg mb-6 md:mb-0">
-        <h2 className="text-2xl font-semibold mb-4 text-yellow-500">Send Notification</h2>
+        <h2 className="text-2xl font-semibold mb-4 text-yellow-400">Send Notification</h2>
         <div className="space-y-6">
+          {/* Dropdown for selecting user */}
+          <div>
+            <label htmlFor="user-select" className="text-lg text-white">Select User:</label>
+            <select
+              id="user-select"
+              value={selectedUserId}
+              onChange={(e) => setSelectedUserId(e.target.value)}
+              className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-yellow-500"
+            >
+              <option value="">--Select User--</option>
+              {users.map((user) => (
+                <option key={user._id} value={user._id}>
+                  {`${user.firstName} (${user.role})`}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Notification Message and Type */}
           <textarea
             name="message"
             value={newNotification.message}
             onChange={(e) => setNewNotification({ ...newNotification, message: e.target.value })}
             placeholder="Enter notification message"
-            className="w-full p-3 border border-gray-600 rounded-md text-black"
+            className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-yellow-500"
           />
           <div>
-            <label className="text-lg text-white">Notification Type:</label>
+            <label htmlFor="notification-type" className="text-lg text-white">Notification Type:</label>
             <select
+              id="notification-type"
               name="type"
               value={newNotification.type}
               onChange={(e) => setNewNotification({ ...newNotification, type: e.target.value })}
-              className="w-full p-3 border border-gray-600 rounded-md text-black"
+              className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-yellow-500"
             >
               <option value="Important">Important</option>
               <option value="Info">Info</option>
               <option value="Critical">Critical</option>
             </select>
           </div>
+
+          {/* Send/Update Button */}
           <button
             onClick={handleSendNotification}
-            className="w-full bg-yellow-500 text-white p-3 rounded-md hover:bg-yellow-600 transition-colors duration-300 text-lg"
+            className="w-full py-3 text-xl text-white bg-yellow-600 rounded-lg focus:ring-2 focus:ring-yellow-500"
           >
-            Send Notification
+            {newNotification._id ? "Update Notification" : "Send Notification"}
           </button>
         </div>
       </div>
 
-      {/* Notification History Section */}
-      <div className="w-full md:w-2/3 bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold mb-4 text-yellow-500">Notification History</h2>
-        
-        {/* Alert Settings */}
-        <div className="mb-6">
-          <h3 className="text-xl font-semibold text-white">Alert Settings</h3>
-          <label className="flex items-center text-white">
-            <input
-              type="checkbox"
-              name="enableNotifications"
-              checked={alertSettings.enableNotifications}
-              onChange={handleAlertSettingsChange}
-              className="mr-2"
-            />
-            Enable Notifications
-          </label>
-        </div>
-
-        <div className="space-y-4">
-          <h3 className="text-xl font-semibold text-white">Recent Notifications</h3>
-          <ul className="space-y-4">
+      {/* Notifications List */}
+      <div className="w-full md:w-2/3 ml-0 md:ml-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+        <h2 className="text-2xl font-semibold mb-4 text-yellow-400">Notifications</h2>
+        {loading ? (
+          <p className="text-center text-white">Loading...</p>
+        ) : (
+          <div className="space-y-4">
             {notifications.map((notification) => (
-              <li key={notification.id} className="border-b pb-4 border-gray-600">
-                <div className="flex justify-between items-center text-white">
-                  <span className="font-semibold">{notification.type}</span>
-                  <span className="text-gray-400 text-sm">{notification.date}</span>
+              <div
+                key={notification._id}
+                className={`flex justify-between items-center p-4 rounded-lg ${getNotificationColor(
+                  notification.type
+                )}`}
+              >
+                <div>
+                  <p className="text-lg font-semibold">{notification.message}</p>
+                  <p className="text-sm">{new Date(notification.createdAt).toLocaleString()}</p>
                 </div>
-                <p className={`${getNotificationColor(notification.type)} p-3 rounded-md`}>
-                  {notification.message}
-                </p>
-              </li>
+                <div className="flex space-x-4">
+                  <button
+                    onClick={() => handleEditNotification(notification._id)}
+                    className="text-yellow-300"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteNotification(notification._id)}
+                    className="text-red-600"
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );

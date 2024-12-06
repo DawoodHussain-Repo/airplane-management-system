@@ -16,10 +16,9 @@ const LoginRegister = () => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     try {
       if (isLogin) {
         // Login API call
@@ -27,16 +26,27 @@ const LoginRegister = () => {
           email: formData.email,
           password: formData.password,
         });
-
-        // Store token in localStorage
+  
+        // Store token, role, and email in localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('role', response.data.role);
-
+  
+        // If role is 'Crew', store email in localStorage
+        if (response.data.role === 'Crew') {
+          localStorage.setItem('crewEmail', formData.email);
+        }
+  
         setMessage('Login successful! Redirecting...');
+  
+        // Redirect based on user role
         if (response.data.role === 'Admin') {
           window.location.href = '/admin/dashboard';
+        } else if (response.data.role === 'Passenger') {
+          window.location.href = '/passenger/dashboard';
+        } else if (response.data.role === 'Crew') {
+          window.location.href = '/crew/dashboard';
         } else {
-          setMessage('Access denied.');
+          setMessage('Access denied. Unauthorized role.');
         }
       } else {
         setMessage('Registration is handled via Postman. Please use the Login option.');
@@ -45,6 +55,7 @@ const LoginRegister = () => {
       setMessage(error.response?.data?.message || 'An error occurred.');
     }
   };
+  
 
   return (
     <div

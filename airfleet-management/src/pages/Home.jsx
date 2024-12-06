@@ -1,6 +1,7 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
-import HeroSection from '../components/HeroSection';
+import LoginRegister from '../pages/LoginRegister';
+
 const Home = () => {
   return (
     <div
@@ -14,7 +15,9 @@ const Home = () => {
       }}
     >
       <Navbar />
-      <HeroSection />
+      <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <LoginRegister />
+      </div>
     </div>
   );
 };

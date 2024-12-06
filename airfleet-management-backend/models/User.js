@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema({
   contactDetails: contactDetailsSchema,
   travelPreferences: [String],
   loyaltyPoints: { type: Number, default: 0 },
+  status: { type: String, default: 'Active' },  // Added status field
+  booking: { type: String, default: 'PK123' },      // Added booking field
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });

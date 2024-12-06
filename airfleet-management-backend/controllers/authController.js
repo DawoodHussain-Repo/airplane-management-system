@@ -23,7 +23,8 @@ exports.registerUser = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-};
+};// authController.js
+
 
 exports.loginUser = async (req, res) => {
   try {
@@ -32,7 +33,7 @@ exports.loginUser = async (req, res) => {
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: 'User not found' });
 
-    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
+    const isPasswordValid = await bcrypt.compare(password, user.passwordHash);    
     if (!isPasswordValid) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = jwt.sign(
@@ -40,9 +41,9 @@ exports.loginUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-
+   
     res.json({ token, role: user.role });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 };

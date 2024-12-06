@@ -1,15 +1,9 @@
 const express = require('express');
-const { verifyToken } = require('../middlewares/authMiddleware');
-
 const router = express.Router();
+const { protect } = require('../middleware/authMiddleware'); // Import the correct middleware
+const { getDashboardData } = require('../controllers/dashboardController');
 
-// Admin Dashboard Route
-router.get(
-  '/dashboard',
-  verifyToken(['Admin']),
-  (req, res) => {
-    res.status(200).json({ message: 'Welcome to the Admin Dashboard' });
-  }
-);
-
+// Protect route and ensure only users with the 'Admin' role can access it
+router.get('/dashboard', protect(['Admin']), getDashboardData);
+router.get('/dashboard', protect(['Passenger']), getDashboardData);
 module.exports = router;

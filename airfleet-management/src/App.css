@@ -11,6 +11,7 @@ body {
   width: 100vw;
   height: 100vh;
   overflow-x: hidden; /* Prevent horizontal scrolling issues */
+  overflow-y: auto; /* Allow vertical scrolling */
 }
 
 /* Root container */
@@ -36,6 +37,7 @@ body {
   left: 0;
   z-index: 100;
   height: 100%;
+  overflow-y: auto; /* Allow sidebar to scroll if needed */
 }
 
 .crew-sidebar h2 {
@@ -52,8 +54,10 @@ body {
   background: url('../assets/images/plane.jpg') center/cover no-repeat; /* Background image */
   filter: blur(8px); /* Apply blur effect to the background */
   opacity: 0.5; /* Dimmed background */
+  overflow-y: auto; /* Allow content to scroll vertically if it overflows */
 }
 
+/* Crew Management Page */
 .crew-management-page {
   max-width: 90%;
   margin: auto;
@@ -66,6 +70,7 @@ body {
   backdrop-filter: blur(10px); /* Adds a soft blur effect to the background */
 }
 
+/* Typography */
 h1, h2, h3 {
   color: #ffffff;
   text-align: center;

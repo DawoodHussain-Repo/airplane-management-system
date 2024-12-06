@@ -1,7 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const CrewAssignment = require('../models/CrewAssignment');
-
+const { protect } = require('../middleware/authMiddleware'); 
+const crewController = require('../controllers/CrewController/crewController');
+router.get('/dashboard', protect(['Crew']), (req, res) => {
+  res.json({ message: 'Welcome to the Crew Dashboard!' });
+});
 // GET: Fetch all assigned crew
 router.get('/assigned', async (req, res) => {
   try {
@@ -47,4 +51,8 @@ router.delete('/remove', async (req, res) => {
   }
 });
 
+
+// Routes
+router.post('/updateProfile', crewController.updateCrewProfile);
+router.get('/getProfile/:email', crewController.getCrewProfile);
 module.exports = router;

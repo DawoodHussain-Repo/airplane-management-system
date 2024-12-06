@@ -19,6 +19,7 @@ const adminRoutes = (
     <Route path="/admin/notifications" element={<Notifications />} />
     <Route path="/admin/tracking" element={<Tracking />} />
     <Route path="/admin/dashboard" element={<Dashboard />} />
+    
   </Route>
 );
 

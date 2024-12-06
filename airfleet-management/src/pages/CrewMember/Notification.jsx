@@ -1,24 +1,55 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const NotificationsAndAlerts = () => {
-  const [notifications, setNotifications] = useState([
-    { id: 1, message: "Flight AF123 has been delayed by 2 hours.", type: "alert", read: false },
-    { id: 2, message: "Your flight AF456 is scheduled for check-in.", type: "update", read: false },
-    { id: 3, message: "Critical weather alert in New York airport.", type: "critical", read: false },
-  ]);
+  const [notifications, setNotifications] = useState([]);
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    const crewEmail = localStorage.getItem('crewEmail'); // Get the email from localStorage
+
+    if (crewEmail) {
+      // Fetch notifications based on the crew email from the backend API
+      const fetchNotifications = async () => {
+        try {
+          const response = await axios.get(`http://localhost:5000/api/notifications/byEmail/${crewEmail}`);
+          setNotifications(response.data); // Set the notifications state with the response data
+        } catch (error) {
+          setMessage('Failed to fetch notifications. Please try again later.');
+        }
+      };
+
+      fetchNotifications();
+    } else {
+      setMessage('No crew email found. Please log in.');
+    }
+  }, []);
 
   // Mark notification as read
-  const markAsRead = (id) => {
-    setNotifications(notifications.map((notification) => 
-      notification.id === id ? { ...notification, read: true } : notification
-    ));
-  };
+  const markAsRead = async (notification) => {
+    const { _id } = notification;
 
-  // Handle response to notification (for example, acknowledge)
-  const respondToNotification = (id, response) => {
-    // Here you can send the response to the backend (like acknowledging the alert)
-    console.log(`Response to notification ${id}: ${response}`);
-    markAsRead(id);
+    if (!_id) {
+      console.error("Notification ID is missing");
+      return;
+    }
+
+    try {
+      // Make a PUT request to update the notification status
+      const response = await axios.put(`http://localhost:5000/api/notifications/${_id}`, {
+        status: 'Read', // Send 'status' as 'Read'
+      });
+
+      // Update the local state with the updated notification status
+      setNotifications(notifications.map((notif) =>
+        notif._id === _id ? { ...notif, status: 'Read' } : notif
+      ));
+
+      console.log('Notification updated:', response.data); // Log response data to see if the update is successful
+    } catch (error) {
+      setMessage('Failed to update notification status.');
+      console.error('Error:', error.response?.data || error.message);
+    }
   };
 
   return (
@@ -30,37 +61,23 @@ const NotificationsAndAlerts = () => {
         <h3 className="text-xl font-semibold mb-4">Important Notifications</h3>
         <div className="space-y-4">
           {notifications.length === 0 ? (
-            <p className="text-gray-400 text-center">No notifications available.</p>
+            <p className="text-gray-400 text-center">{message || 'No notifications available.'}</p>
           ) : (
             notifications.map((notification) => (
               <div
-                key={notification.id}
-                className={`p-4 rounded-lg ${notification.read ? "bg-gray-700" : "bg-gray-600"} hover:bg-gray-500`}
+                key={notification._id}
+                className={`p-4 rounded-lg ${notification.status === "Read" ? "bg-gray-700" : "bg-gray-600"} hover:bg-gray-500`}
               >
-                <div className="flex justify-between">
-                  <p className="text-lg">{notification.message}</p>
-                  {!notification.read && (
+                <div className="flex justify-between items-center mb-2">
+                  <p className="text-lg flex-1">{notification.message}</p>
+                  {notification.status !== "Read" && (
                     <button
-                      onClick={() => markAsRead(notification.id)}
-                      className="text-blue-500 hover:text-blue-400"
+                      onClick={() => markAsRead(notification)}
+                      className="text-blue-500 hover:text-blue-400 text-sm mt-2 ml-2"
                     >
                       Mark as Read
                     </button>
                   )}
-                </div>
-                <div className="mt-2 flex space-x-4">
-                  <button
-                    onClick={() => respondToNotification(notification.id, "Acknowledge")}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600 transition duration-200"
-                  >
-                    Acknowledge
-                  </button>
-                  <button
-                    onClick={() => respondToNotification(notification.id, "Dismiss")}
-                    className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition duration-200"
-                  >
-                    Dismiss
-                  </button>
                 </div>
               </div>
             ))

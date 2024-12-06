@@ -1,33 +1,63 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 
-const initialFeedbacks = [
-  { id: 1, flightNo: "AF100", rating: 4, comments: "Great flight, very comfortable!" },
-  { id: 2, flightNo: "AF200", rating: 3, comments: "Decent flight, but food could be better." },
-  { id: 3, flightNo: "AF300", rating: 5, comments: "Excellent experience, loved the service!" },
-];
-
 const FeedbackManagement = () => {
-  const [feedbacks, setFeedbacks] = useState(initialFeedbacks);
+  const [feedbacks, setFeedbacks] = useState([]);
   const [newFeedback, setNewFeedback] = useState({ flightNo: "", rating: 0, comments: "" });
   const [averageRating, setAverageRating] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmitFeedback = () => {
+  // Fetch all feedbacks when the component mounts
+  useEffect(() => {
+    fetchFeedbacks();
+  }, []);
+
+  // Fetch feedbacks from API
+  const fetchFeedbacks = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/api/feedbacks");
+      const data = await response.json();
+      setFeedbacks(data);
+      calculateAverageRating(data);
+    } catch (error) {
+      console.error("Error fetching feedbacks:", error);
+    }
+  };
+
+  // Handle feedback submission
+  const handleSubmitFeedback = async () => {
     if (!newFeedback.flightNo || !newFeedback.comments || newFeedback.rating === 0) {
       alert("Please fill in all fields before submitting.");
       return;
     }
-    const newFeedbackObj = { ...newFeedback, id: Date.now() };
-    setFeedbacks((prevFeedbacks) => [...prevFeedbacks, newFeedbackObj]);
-    setIsSubmitting(false);
-    resetForm();
-    calculateAverageRating();
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("http://localhost:5000/api/feedbacks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newFeedback),
+      });
+      const result = await response.json();
+      if (response.ok) {
+        setFeedbacks((prevFeedbacks) => [...prevFeedbacks, result]);
+        resetForm();
+        calculateAverageRating([...feedbacks, result]);
+      } else {
+        console.error("Error submitting feedback:", result);
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const calculateAverageRating = () => {
-    const totalRating = feedbacks.reduce((sum, feedback) => sum + feedback.rating, 0);
-    setAverageRating(totalRating / feedbacks.length);
+  // Calculate average rating
+  const calculateAverageRating = (feedbacksList) => {
+    const totalRating = feedbacksList.reduce((sum, feedback) => sum + feedback.rating, 0);
+    setAverageRating(totalRating / feedbacksList.length);
   };
 
   const resetForm = () => {
@@ -65,7 +95,7 @@ const FeedbackManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-gray-900 min-h-screen flex flex-col md:flex-row gap-6 text-white">
+    <div className="p-6 bg-gray-00 min-h-screen flex flex-col md:flex-row gap-6 text-white">
       {/* Feedback Form */}
       <div className="w-full md:w-1/2 lg:w-2/5 bg-gray-800 p-8 rounded-lg shadow-lg">
         <h2 className="text-2xl font-semibold mb-4">Submit Your Feedback</h2>
@@ -124,9 +154,9 @@ const FeedbackManagement = () => {
             <h3 className="text-xl font-semibold">Recent Feedbacks</h3>
             <ul className="space-y-4">
               {feedbacks.map((feedback) => (
-                <li key={feedback.id} className="border-b pb-4">
+                <li key={feedback._id} className="border-b pb-4">
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold">{feedback.flightNo}</span>
+                    <span className="font-semibold">{feedback.passengerId.email}</span> {/* Show Passenger's Email */}
                     <div className="flex items-center">
                       <Star className="mr-1 text-[#f39c12]" />
                       {feedback.rating}

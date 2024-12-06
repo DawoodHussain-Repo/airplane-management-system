@@ -1,11 +1,23 @@
 const express = require('express');
-const { registerUser, getAllCrew } = require('../controllers/userController');
+const { addUser, getAllUsers,getAllCrew, getAllPassengers, updateUser, deleteUser } = require('../controllers/userController');
+
 const router = express.Router();
 
-// Route to register a new crew member
-router.post('/crew', registerUser);
+// Add a user (Crew or Passenger)
+router.post('/', addUser);
 
-// Route to get all crew members
+// Get all crew members
 router.get('/crew', getAllCrew);
 
+// Get all passengers
+router.get('/passengers', getAllPassengers);
+
+// Update a user
+router.put('/:userId', updateUser);
+
+// Delete a user
+router.delete('/:userId', deleteUser);
+
+// Get all users (Crew + Passengers)
+router.get('/', getAllUsers);
 module.exports = router;

@@ -17,24 +17,15 @@ const Navbar = () => {
 
       {/* Main Navigation */}
       <ul className={`nav-links ${menuOpen ? "open" : ""}`}>
-        <li><a href="/">Home</a></li>
-        <li><a href="/admin/crew-management">Crew Management</a></li>
-        <li><a href="/admin/flight-schedule">Flight Schedule</a></li>
-        <li><a href="/admin/user-management">User Management</a></li>
-        <li><a href="/admin/notifications">Notifications</a></li>
-        <li><a href="/admin/feedback">Feedback</a></li>
-        <li><a href="/logout">Logout</a></li>
+        <li><a href="/flight-schedule">Flight Schedules</a></li>
+        <li><a href="/about-us">About Us</a></li>
+        <li><a href="/contact-us">Contact Us</a></li>
       </ul>
 
       {/* Mobile Menu Toggle */}
       <div className="navbar-toggle" onClick={toggleMenu}>
         {menuOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
       </div>
-
-      {/* Admin Button */}
-      <button className="admin-button">
-        <a href="/admin-dashboard">Admin</a>
-      </button>
     </nav>
   );
 };
