@@ -16,6 +16,7 @@ const AdminSidebar = () => {
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  
   };
 
   const navLinks = [
@@ -32,12 +33,12 @@ const AdminSidebar = () => {
     <div className={`flex h-screen ${isSidebarOpen ? "w-64" : "w-0"} transition-all duration-300`}>
       {/* Sidebar */}
       <div
-        className={`w-64 h-screen bg-white text-black p-6 fixed top-0 left-0 ${isSidebarOpen ? "" : "hidden"} md:block shadow-lg`}
+        className={`w-64 h-screen sidebar bg-white text-black p-6 fixed top-0 left-0 ${isSidebarOpen ? "" : "hidden"} md:block shadow-lg`}
       >
         {/* Logo and Admin Panel Link */}
         <div className="text-center text-2xl font-bold mb-6 text-maroon-600">
           <Link to="/admin/dashboard" className="no-underline text-black px-3">
-            <FaHome className="inline-block mb-2 text-maroon-600" />
+            <FaHome className="mb-2 md:inline-block hidden text-maroon-600" />
             Admin Panel
           </Link>
         </div>
@@ -64,7 +65,7 @@ const AdminSidebar = () => {
         {/* Log Out Button */}
         <div className="absolute bottom-6 left-0 w-full px-6">
           <Link
-            to="/logout"
+            to="/"
             className="flex items-center text-lg text-black hover:text-red-500 px-4 py-3 rounded transition-colors duration-300 space-x-3"
           >
             <FaSignOutAlt />
@@ -76,7 +77,7 @@ const AdminSidebar = () => {
       {/* Toggle Button for Mobile */}
       <button
         onClick={toggleSidebar}
-        className="md:hidden fixed top-4 left-4 z-50 bg-maroon-600 text-white p-3 rounded-full shadow-lg"
+        className="md:hidden fixed top-2 left-2 z-50 bg-maroon-600 text-white p-3 rounded-full shadow-lg"
       >
         <FaHome className="text-xl" />
       </button>

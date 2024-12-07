@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import userimg from "../../assets/images/user.png";
+
 const FeedbackManagement = () => {
   const [feedbacks, setFeedbacks] = useState([]);
   const [averageRating, setAverageRating] = useState(0);
@@ -10,7 +11,6 @@ const FeedbackManagement = () => {
     fetchFeedbacks();
   }, []);
 
-  // Fetch feedbacks from API
   const fetchFeedbacks = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/feedbacks");
@@ -22,46 +22,43 @@ const FeedbackManagement = () => {
     }
   };
 
-  // Calculate average rating
   const calculateAverageRating = (feedbacksList) => {
     const totalRating = feedbacksList.reduce((sum, feedback) => sum + feedback.rating, 0);
     setAverageRating(totalRating / feedbacksList.length);
   };
 
-  // Calculate the total number of feedbacks
   const totalFeedbacks = feedbacks.length;
 
-  // Get the count for each rating
-  const getRatingCount = (rating) => feedbacks.filter((feedback) => feedback.rating === rating).length;
+  const getRatingCount = (rating) =>
+    feedbacks.filter((feedback) => feedback.rating === rating).length;
 
-  // Function to determine background color based on rating
   const getFeedbackColor = (rating) => {
-    if (rating >= 4) return "bg-green-500 text-white"; // Excellent (green)
-    if (rating === 3) return "bg-yellow-500 text-white"; // Average (yellow)
-    return "bg-red-500 text-white"; // Poor (red)
+    if (rating >= 4) return "bg-green-500 text-white";
+    if (rating === 3) return "bg-yellow-500 text-white";
+    return "bg-red-500 text-white";
   };
 
   return (
     <div>
-      <div className="flex items-center justify-between px-6 py-4 bg-secondary">
-        <h1 className="text-xl font-bold text-white">Feedback</h1>
+      <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
+        <h1 className="text-xl font-bold">Feedback Management</h1>
       </div>
-      <div className="p-0 bg-gray-00 min-h-screen flex flex-col gap-6 text-black">
+
+      <div className="p-0 bg-gray-00 min-h-screen flex flex-col gap-6 text-black text-sm">
         {/* Feedback Report Section */}
         <div className="w-full bg-white p-6 shadow-lg">
-          {/* Overall Rating */}
-          <div className="mb-6 p-6 bg-gray-200 rounded-lg text-black flex items-center justify-between">
-            <span className="text-xl">Average Rating:</span>
+          <div className="mb-6 p-6 bg-gray-200 rounded-lg md:text-lg flex items-center justify-between">
+            <span>Average Rating:</span>
             <div className="flex items-center space-x-3">
-              <Star className="text-yellow-500 w-7 h-7" />
-              <span className="text-3xl font-bold">{averageRating.toFixed(2)} / 5</span>
+              <Star className="text-yellow-500 w-5 h-5" />
+              <span className="text-lg font-bold">{averageRating.toFixed(2)} / 5</span>
             </div>
           </div>
 
           {/* Feedback Breakdown */}
-          <div className="space-y-6 bg-gray-200 p-10 rounded-lg">
+          <div className="space-y-6 md:text-lg bg-gray-200 p-6 rounded-lg">
             <div>
-              <strong className="text-xl">Feedback Breakdown:</strong>
+              <strong>Feedback Breakdown:</strong>
               <div className="space-y-4 mt-4">
                 {[1, 2, 3, 4, 5].map((rating) => {
                   const count = getRatingCount(rating);
@@ -69,8 +66,8 @@ const FeedbackManagement = () => {
                   return (
                     <div key={rating} className="space-y-3">
                       <div className="flex justify-between">
-                        <span className="text-lg">Rating {rating}:</span>
-                        <span className="text-lg">{count} feedback(s)</span>
+                        <span>Rating {rating}:</span>
+                        <span>{count} feedback(s)</span>
                       </div>
                       <div className="w-full bg-gray-300 rounded-full h-2">
                         <div
@@ -86,27 +83,26 @@ const FeedbackManagement = () => {
           </div>
 
           {/* Recent Feedbacks */}
-          <div className="overflow-y-auto max-h-80 mt-6 bg-gray-200 p-5 scrollbar-thin scrollbar-thumb-secondary rounded-lg">
-            <h3 className="text-xl font-semibold">Recent Feedbacks</h3>
-            <ul className="space-y-6">
+          <div className="overflow-y-auto max-h-80 mt-6 bg-gray-200 p-4 scrollbar-thin scrollbar-thumb-secondary rounded-lg">
+            <h3 className="font-semibold mb-4 md:text-lg">Recent Feedbacks</h3>
+            <ul className="space-y-4">
               {feedbacks.map((feedback) => (
                 <li key={feedback._id} className="border-b pb-4">
                   <div className="flex items-center space-x-4">
-                    {/* User Image */}
                     <img
-                      src= {userimg}
+                      src={userimg}
                       alt="User"
-                      className="w-12 my-2 h-12 rounded-full object-cover"
+                      className="w-10 h-10 rounded-full object-cover"
                     />
-                    <div className="flex justify-between w-full items-center">
+                    <div className="flex justify-between w-full items-center p-3">
                       <span className="font-semibold">{feedback.passengerId.email}</span>
                       <div className="flex items-center">
-                        <Star className="mr-2 text-[#f39c12]" />
+                        <Star className="mr-2 text-yellow-500" />
                         {feedback.rating}
                       </div>
                     </div>
                   </div>
-                  <p className={`${getFeedbackColor(feedback.rating)} p-3 rounded-lg`}>
+                  <p className={`${getFeedbackColor(feedback.rating)} p-2 rounded-lg`}>
                     {feedback.comments}
                   </p>
                 </li>

@@ -109,9 +109,10 @@ const CrewManagement = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-white to-white text-gray-800">
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 bg-secondary">
-        <h1 className="text-xl font-bold text-white">Crew Management</h1>
-      </div>
+      <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
+  <h1 className="text-xl font-bold text-white">Crew Management</h1>
+</div>
+
 
       {/* Main Content */}
       <div className="p-6 space-y-8">

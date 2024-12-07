@@ -90,9 +90,10 @@ const TrackingPanel = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between px-6 py-4 bg-secondary">
-        <h1 className="text-xl font-bold text-white">Tracking Panel</h1>
-      </div>
+      <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
+  <h1 className="text-xl font-bold">Tracking Panel</h1>
+</div>
+
       <div className="h-[800px] bg-white text-black p-6">
 
         {/* Search and Filter */}

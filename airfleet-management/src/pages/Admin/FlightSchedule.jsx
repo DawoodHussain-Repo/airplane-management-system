@@ -113,14 +113,15 @@ const FlightSchedule = () => {
   return (
     <div>
     <ToastContainer />
-    <div className="flex items-center justify-between px-6 py-4 bg-secondary">
-      <h1 className="text-xl font-bold text-white">Flight Schedule</h1>
-    </div>
+    <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
+  <h1 className="text-xl font-bold">Flight Schedules</h1>
+</div>
+
   
     <div className="p-6 bg-white min-h-[600px] text-black space-y-6">
       {/* Add Flight Form */}
       <div className="bg-gray-200 p-6 rounded-lg shadow-lg">
-        <h2 className="text-xl font-semibold mb-4">
+        <h2 className="md:text-xl text-lg  font-semibold mb-4">
           {isEditing ? "Edit Flight" : "Add New Flight"}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -129,38 +130,38 @@ const FlightSchedule = () => {
             placeholder="Flight No."
             value={newFlight.flightNo}
             onChange={(e) => setNewFlight({ ...newFlight, flightNo: e.target.value })}
-            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+            className="w-full p-3 text-sm bg-white text-black border rounded-md outline-black"
           />
           <input
             type="text"
             placeholder="Origin"
             value={newFlight.origin}
             onChange={(e) => setNewFlight({ ...newFlight, origin: e.target.value })}
-            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+            className="w-full p-3 text-sm bg-white text-black border rounded-md outline-black"
           />
           <input
             type="text"
             placeholder="Destination"
             value={newFlight.destination}
             onChange={(e) => setNewFlight({ ...newFlight, destination: e.target.value })}
-            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+            className="w-full p-3 text-sm bg-white text-black border rounded-md outline-black"
           />
           <input
             type="datetime-local"
             value={newFlight.departure}
             onChange={(e) => setNewFlight({ ...newFlight, departure: e.target.value })}
-            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+            className="w-full p-3 text-sm bg-white text-black border rounded-md outline-black"
           />
           <input
             type="datetime-local"
             value={newFlight.arrival}
             onChange={(e) => setNewFlight({ ...newFlight, arrival: e.target.value })}
-            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+            className="w-full p-3 text-sm bg-white text-black border rounded-md outline-black"
           />
         </div>
         <button
           onClick={isEditing ? handleSaveEdit : handleAddFlight}
-          className="mt-4 w-full py-3 text-white bg-accent-orange-light rounded-md hover:bg-gray-800 transition"
+          className="mt-4 w-full py-3 text-sm text-white bg-accent-orange-light rounded-md hover:bg-gray-800 transition"
         >
           {isEditing ? "Save Changes" : "Add Flight"}
         </button>
@@ -170,7 +171,7 @@ const FlightSchedule = () => {
       <div className="bg-gray-200 p-4 rounded-lg shadow-lg">
         <h2 className="text-xl font-semibold mb-4">Flight Schedule</h2>
         <div className="overflow-auto max-h-[400px] scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-300">
-          <table className="table-auto w-full border-collapse border border-gray-600">
+          <table className="table-auto w-full text-sm border-collapse border border-gray-600">
             <thead className="sticky top-0 bg-gray-300 z-10">
               <tr>
                 <th className="p-2 border border-gray-600 text-black text-left">Flight No.</th>

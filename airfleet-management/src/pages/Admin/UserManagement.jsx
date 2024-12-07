@@ -121,9 +121,10 @@ const UserManagement = () => {
 
   return (
     <div>
-      <div className="flex items-center justify-between px-6 py-4 bg-secondary">
-        <h1 className="text-xl font-bold text-white">User Management</h1>
-      </div>
+    <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
+  <h1 className="md:text-xl text-lg font-bold">User Management</h1>
+</div>
+
       <div className="p-6 bg-gradient-to-br from-white to-white min-h-[600px] text-black">
         {/* Add User Form */}
         <div className="bg-gray-200 p-6 rounded-lg shadow-lg mb-6 text-black">
@@ -136,21 +137,21 @@ const UserManagement = () => {
               placeholder="First Name"
               value={newUser.firstName}
               onChange={(e) => setNewUser({ ...newUser, firstName: e.target.value })}
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border text-sm rounded-md bg-white text-black placeholder-gray-800"
             />
             <input
               type="text"
               placeholder="Last Name"
               value={newUser.lastName}
               onChange={(e) => setNewUser({ ...newUser, lastName: e.target.value })}
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border text-sm rounded-md bg-white text-black placeholder-gray-800"
             />
             <input
               type="email"
               placeholder="Email"
               value={newUser.email}
               onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border text-sm rounded-md bg-white text-black placeholder-gray-800"
             />
             {!isEditing && (
               <input
@@ -158,7 +159,7 @@ const UserManagement = () => {
                 placeholder="Password"
                 value={newUser.password}
                 onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
-                className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+                className="p-3 border text-sm rounded-md bg-white text-black placeholder-gray-800"
               />
             )}
             <input
@@ -174,7 +175,7 @@ const UserManagement = () => {
                   },
                 })
               }
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border rounded-md text-sm bg-white text-black placeholder-gray-800"
             />
             <input
               type="text"
@@ -189,12 +190,12 @@ const UserManagement = () => {
                   },
                 })
               }
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border rounded-md text-sm bg-white text-black placeholder-gray-800"
             />
             <select
               value={newUser.role}
               onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border rounded-md text-sm bg-white text-black placeholder-gray-800"
             >
               <option value="Passenger">Passenger</option>
               <option value="Crew">Crew</option>
@@ -204,12 +205,12 @@ const UserManagement = () => {
               placeholder="Booking"
               value={newUser.booking}
               onChange={(e) => setNewUser({ ...newUser, booking: e.target.value })}
-              className="p-3 border rounded-md bg-white text-black placeholder-gray-800"
+              className="p-3 border rounded-md text-sm bg-white text-black placeholder-gray-800"
             />
           </div>
           <button
             onClick={isEditing ? handleSaveEdit : handleAddUser}
-            className="w-full mt-4 py-3 rounded-md  text-white border bg-accent-orange-light hover:bg-gray-800 transition-colors"
+            className="w-full mt-4 py-3 rounded-md text-sm  text-white border bg-accent-orange-light hover:bg-gray-800 transition-colors"
           >
             {isEditing ? "Save Changes" : "Add User"}
           </button>
@@ -217,7 +218,7 @@ const UserManagement = () => {
 
         {/* User List Table */}
         <div className="bg-gray-200 p-6 rounded-lg shadow-lg text-black">
-          <h2 className="text-xl font-semibold mb-4">User Management</h2>
+          <h2 className="md:text-xl text-lg font-semibold mb-4">User Management</h2>
           <input
             type="text"
             placeholder="Search Users"
@@ -226,7 +227,7 @@ const UserManagement = () => {
             className="w-full p-3 border bg-white text-black placeholder-gray-800 rounded-md mb-4"
           />
           <div className="overflow-x-auto max-h-[400px] custom-scrollbar">
-            <table className="table-auto w-full border-collapse border border-gray-300">
+            <table className="table-auto  text-sm w-full border-collapse border border-gray-300">
               <thead className="sticky top-0 bg-gray-200 z-10">
                 <tr>
                   <th className="p-4 border border-gray-300 text-left">First Name</th>
@@ -247,12 +248,12 @@ const UserManagement = () => {
                 ) : (
                   filteredUsers.map((user) => (
                     <tr key={user._id} className="hover:bg-gray-100">
-                      <td className="p-4 border border-gray-300">{user.firstName}</td>
-                      <td className="p-4 border border-gray-300">{user.lastName}</td>
-                      <td className="p-4 border border-gray-300">{user.email}</td>
-                      <td className="p-4 border border-gray-300">{user.role}</td>
-                      <td className="p-4 border border-gray-300">{user.booking}</td>
-                      <td className="p-4 border border-gray-300 flex justify-center items-center gap-2">
+                      <td className="p-2 border border-gray-300">{user.firstName}</td>
+                      <td className="p-2 border border-gray-300">{user.lastName}</td>
+                      <td className="p-2 border border-gray-300">{user.email}</td>
+                      <td className="p-2 border border-gray-300">{user.role}</td>
+                      <td className="p-2 border border-gray-300">{user.booking}</td>
+                      <td className="p-2 border border-gray-300 flex justify-center items-center gap-2">
                         <button
                           onClick={() => handleEditUser(user._id)}
                           className="bg-accent-orange-light text-black p-2 rounded-md hover:bg-orange-600 transition-colors"
