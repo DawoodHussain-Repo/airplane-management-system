@@ -133,19 +133,24 @@ const NotificationManagement = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-00 to-gray-700 min-h-[600px] flex flex-col md:flex-row">
+    <div className="h-full">
+          <div className="flex items-center justify-between px-6 py-4 bg-secondary">
+    <h1 className="text-xl font-bold">Airline Management</h1>
+  
+  </div>
+    <div className="p-0 h-full bg-gradient-to-br from-gray-00 to-gray-700 min-h-[600px] rounded-none flex flex-col md:flex-row">
       {/* Notification Form */}
-      <div className="w-full md:w-1/3 bg-gray-800 p-6 rounded-lg shadow-lg mb-6 md:mb-0">
-        <h2 className="text-2xl font-semibold mb-4 text-yellow-400">Send Notification</h2>
+      <div className="w-full md:w-1/3 bg-white p-6 border border-gray-300 shadow-lg md:mb-0">
+        <h2 className="text-2xl font-semibold mb-4 text-accent-orange-light">Send Notification</h2>
         <div className="space-y-6">
           {/* Dropdown for selecting user */}
           <div>
-            <label htmlFor="user-select" className="text-lg text-white">Select User:</label>
+            <label htmlFor="user-select" className="text-lg text-gray-800">Select User:</label>
             <select
               id="user-select"
               value={selectedUserId}
               onChange={(e) => setSelectedUserId(e.target.value)}
-              className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-yellow-500"
+              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-800 focus:ring-2 focus:ring-accent-orange-light"
             >
               <option value="">--Select User--</option>
               {users.map((user) => (
@@ -162,16 +167,16 @@ const NotificationManagement = () => {
             value={newNotification.message}
             onChange={(e) => setNewNotification({ ...newNotification, message: e.target.value })}
             placeholder="Enter notification message"
-            className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-yellow-500"
+            className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-800 focus:ring-2 focus:ring-accent-orange-light"
           />
           <div>
-            <label htmlFor="notification-type" className="text-lg text-white">Notification Type:</label>
+            <label htmlFor="notification-type" className="text-lg text-gray-800">Notification Type:</label>
             <select
               id="notification-type"
               name="type"
               value={newNotification.type}
               onChange={(e) => setNewNotification({ ...newNotification, type: e.target.value })}
-              className="w-full p-3 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring-2 focus:ring-yellow-500"
+              className="w-full p-3 border border-gray-300 rounded-md bg-gray-100 text-gray-800 focus:ring-2 focus:ring-accent-orange-light"
             >
               <option value="Important">Important</option>
               <option value="Info">Info</option>
@@ -182,7 +187,7 @@ const NotificationManagement = () => {
           {/* Send/Update Button */}
           <button
             onClick={handleSendNotification}
-            className="w-full py-3 text-xl text-white bg-yellow-600 rounded-lg focus:ring-2 focus:ring-yellow-500"
+            className="w-full py-3 text-xl text-white bg-accent-orange-light rounded-lg focus:ring-2 focus:ring-accent-orange-light"
           >
             {newNotification._id ? "Update Notification" : "Send Notification"}
           </button>
@@ -190,10 +195,9 @@ const NotificationManagement = () => {
       </div>
 
       {/* Notifications List */}
-      <div className="w-full md:w-2/3 ml-0 md:ml-6 bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold mb-4 text-yellow-400">Notifications</h2>
+      <div className="w-full md:w-2/3 ml-0 md:ml-0 bg-orange-100 p-6">
         {loading ? (
-          <p className="text-center text-white">Loading...</p>
+          <p className="text-center text-gray-800">Loading...</p>
         ) : (
           <div className="space-y-4">
             {notifications.map((notification) => (
@@ -227,6 +231,8 @@ const NotificationManagement = () => {
         )}
       </div>
     </div>
+    </div>
+
   );
 };
 

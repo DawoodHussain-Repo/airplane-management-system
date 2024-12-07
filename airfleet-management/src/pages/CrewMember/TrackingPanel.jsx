@@ -30,10 +30,6 @@ const TrackingPanel = () => {
   const handleSelectFlight = async (flightId) => {
     try {
       setLoading(true);
-      setError(null);
-
-      // Clear payment records while loading new data
-      setPaymentRecords([]);
 
       // Fetch flight details
       const flightResponse = await axios.get(`http://localhost:5000/api/flights/${flightId}`);
@@ -41,14 +37,15 @@ const TrackingPanel = () => {
 
       // Fetch payment records
       const paymentResponse = await axios.get(`http://localhost:5000/api/flights/${flightId}/payments`);
-      setPaymentRecords(paymentResponse.data);
-
-      // Show modal if no payments are found
-      setShowNoPaymentModal(paymentResponse.data.length === 0);
+      if (paymentResponse.data.length === 0) {
+        setShowNoPaymentModal(true); // Show the modal if no payments
+      } else {
+        setPaymentRecords(paymentResponse.data);
+      }
 
       setLoading(false);
     } catch (err) {
-      setError("Failed to fetch flight details or payment records.");
+      setError("Failed to fetch flight details or payment records. Please try again.");
       setLoading(false);
     }
   };
@@ -58,23 +55,32 @@ const TrackingPanel = () => {
     setShowNoPaymentModal(false);
   };
 
+  // Render loading or error state
+  if (loading) {
+    return <div className="text-white text-center p-6">Loading data...</div>;
+  }
+
+  if (error) {
+    return <div className="text-red-500 text-center p-6">{error}</div>;
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-gray-800 text-white p-6">
-      <h2 className="text-4xl font-bold text-center mb-8">Tracking Panel</h2>
+    <div className="min-h-[400px] bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
+      <h2 className="text-3xl font-semibold text-center mb-6">Tracking Panel</h2>
 
       {/* Flight Selection */}
       <div className="bg-gray-800 p-6 rounded-lg shadow-lg mb-6">
-        <h3 className="text-2xl font-semibold mb-4">Assigned Flights</h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        <h3 className="text-xl font-medium mb-4">Assigned Flights</h3>
+        <div className="max-h-[400px] overflow-y-auto space-y-4">
           {assignedFlights.map((flight) => (
             <div
               key={flight._id}
-              className="p-4 bg-gradient-to-r from-gray-700 via-gray-600 to-gray-500 rounded-lg shadow-md hover:shadow-lg hover:scale-105 transition-transform cursor-pointer"
+              className="p-4 rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer"
               onClick={() => handleSelectFlight(flight._id)}
             >
-              <h4 className="font-bold text-lg">{flight.flightNumber}</h4>
-              <p className="text-sm text-gray-300">{flight.destination}</p>
-              <p className="text-xs text-gray-400">Departure: {new Date(flight.departureTime).toLocaleString()}</p>
+              <h4 className="font-semibold text-gray-100">{flight.flightNumber}</h4>
+              <p className="text-gray-400">{flight.destination}</p>
+              <p className="text-sm text-gray-500">Departure: {new Date(flight.departureTime).toLocaleString()}</p>
             </div>
           ))}
         </div>
@@ -83,13 +89,13 @@ const TrackingPanel = () => {
       {/* Tracking Information */}
       {selectedFlight && (
         <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h3 className="text-2xl font-semibold mb-4">Tracking Information</h3>
+          <h3 className="text-xl font-medium mb-4">Tracking Information</h3>
 
-          <div className="space-y-6">
+          <div className="space-y-4">
             {/* Flight Info */}
             <div className="p-4 bg-gray-700 rounded-lg">
               <h4 className="text-lg font-semibold">{selectedFlight.flightNumber}</h4>
-              <p className="text-gray-300">Destination: {selectedFlight.destination}</p>
+              <p className="text-gray-400">Destination: {selectedFlight.destination}</p>
               <p className="text-gray-400">
                 Departure: {new Date(selectedFlight.departureTime).toLocaleString()}
               </p>
@@ -105,11 +111,9 @@ const TrackingPanel = () => {
               ) : (
                 paymentRecords.map((payment, index) => (
                   <div key={index} className="mb-2">
-                    <p className="text-gray-300">
-                      {new Date(payment.date).toLocaleDateString()}: {payment.amount}
-                    </p>
-                    <p className="text-sm text-gray-400">Method: {payment.method}</p>
-                    <p className="text-sm text-gray-400">Status: {payment.status}</p>
+                    <p className="text-gray-400">{new Date(payment.date).toLocaleDateString()}: {payment.amount}</p>
+                    <p className="text-gray-500">Method: {payment.method}</p>
+                    <p className="text-gray-400">Status: {payment.status}</p>
                   </div>
                 ))
               )}
@@ -122,7 +126,7 @@ const TrackingPanel = () => {
       {showNoPaymentModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-gray-800 p-6 rounded-lg text-white max-w-sm mx-auto">
-            <h4 className="text-xl font-bold">No Payments Found</h4>
+            <h4 className="text-xl font-semibold">No Payments Found</h4>
             <p className="mt-2">This flight has not been paid for yet.</p>
             <button
               className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
@@ -133,9 +137,6 @@ const TrackingPanel = () => {
           </div>
         </div>
       )}
-
-      {/* Error Message */}
-      {error && <div className="text-red-500 mt-4 text-center">{error}</div>}
     </div>
   );
 };

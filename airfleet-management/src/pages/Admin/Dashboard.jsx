@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { FaHome } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';  // For redirection after failed auth
 
 const Dashboard = () => {
@@ -62,61 +61,56 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="h-[600px] bg-gradient-to-br from-gray-900 to-gray-700 text-white flex">
-      {/* Sidebar */}
-      <div
-        className={`${
-          isSidebarOpen ? "block" : "hidden"
-        } md:block w-64 bg-gray-800 p-6 space-y-8`}
-      >
-        <h1 className="text-2xl font-bold">Airline Management</h1>
-        <button
-          onClick={toggleSidebar}
-          className="flex items-center gap-2 px-4 py-2 bg-yellow-500 rounded-lg hover:bg-yellow-600 transition"
-        >
-          <FaHome />
-          Home
-        </button>
+    <div className="flex flex-col h-screen bg-gradient-to-b from-white to-white text-white  p-0">
+   {/* Main Content */}
+   <div className="flex items-center justify-between px-6 py-4 bg-secondary">
+        <h1 className="text-xl font-bold">Airline Management</h1>
+      
       </div>
-
-      {/* Main Content */}
-      <div className="flex-1 p-6 space-y-8 w-full">
-        <div className="flex justify-between items-center mb-6">
-          {/* Home logo button for mobile */}
-          <button
-            onClick={toggleSidebar}
-            className="md:hidden flex items-center gap-2 px-4 py-2 bg-yellow-500 rounded-lg hover:bg-yellow-600 transition"
-          >
-            <FaHome />
-            Home
-          </button>
-        </div>
+      <div className="flex-1 p-4 sm:p-6 space-y-6 w-full overflow-hidden">
+        {/* Airline Management Banner */}
+   
 
         {/* Overview Statistics Section */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold mb-2">Active Flights</h2>
-            <p className="text-3xl font-bold text-green-500">{stats.activeFlights}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+          {/* Active Flights */}
+          <div className="bg-secondary bg-opacity-80 p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-center">Active Flights</h2>
+            <div className="bg-white text-black p-4 rounded-full flex justify-center items-center shadow-lg w-24 h-24 sm:w-28 sm:h-28 transform transition-all duration-300 hover:scale-105">
+              <p className="text-3xl sm:text-4xl font-bold text-green-500">{stats.activeFlights}</p>
+            </div>
           </div>
 
-          <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold mb-2">Total Passengers</h2>
-            <p className="text-3xl font-bold text-blue-500">{stats.totalPassengers}</p>
+          {/* Total Passengers */}
+          <div className="bg-secondary bg-opacity-80 p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-center">Total Passengers</h2>
+            <div className="bg-white text-black p-4 rounded-full flex justify-center items-center shadow-lg w-24 h-24 sm:w-28 sm:h-28 transform transition-all duration-300 hover:scale-105">
+              <p className="text-3xl sm:text-4xl font-bold text-blue-500">{stats.totalPassengers}</p>
+            </div>
           </div>
 
-          <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold mb-2">Pending Crew Requests</h2>
-            <p className="text-3xl font-bold text-red-500">{stats.pendingCrewRequests}</p>
+          {/* Pending Crew Requests */}
+          <div className="bg-secondary bg-opacity-80 p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-center">Pending Crew Requests</h2>
+            <div className="bg-white text-black p-4 rounded-full flex justify-center items-center shadow-lg w-24 h-24 sm:w-28 sm:h-28 transform transition-all duration-300 hover:scale-105">
+              <p className="text-3xl sm:text-4xl font-bold text-red-500">{stats.pendingCrewRequests}</p>
+            </div>
           </div>
 
-          <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold mb-2">Total Flights</h2>
-            <p className="text-3xl font-bold text-purple-500">{stats.totalFlights}</p>
+          {/* Total Flights */}
+          <div className="bg-secondary bg-opacity-80 p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-center">Total Flights</h2>
+            <div className="bg-white text-black p-4 rounded-full flex justify-center items-center shadow-lg w-24 h-24 sm:w-28 sm:h-28 transform transition-all duration-300 hover:scale-105">
+              <p className="text-3xl sm:text-4xl font-bold text-purple-500">{stats.totalFlights}</p>
+            </div>
           </div>
 
-          <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
-            <h2 className="text-xl font-bold mb-2">On-Time Flights</h2>
-            <p className="text-3xl font-bold text-teal-500">{stats.onTimeFlights}</p>
+          {/* On-Time Flights */}
+          <div className="bg-secondary bg-opacity-80 p-4 rounded-xl shadow-lg cursor-pointer flex flex-col items-center justify-center h-full transform transition-all duration-300 hover:scale-105 hover:shadow-2xl">
+            <h2 className="text-lg sm:text-xl font-bold mb-2 text-center">On-Time Flights</h2>
+            <div className="bg-white text-black p-4 rounded-full flex justify-center items-center shadow-lg w-24 h-24 sm:w-28 sm:h-28 transform transition-all duration-300 hover:scale-105">
+              <p className="text-3xl sm:text-4xl font-bold text-teal-500">{stats.onTimeFlights}</p>
+            </div>
           </div>
         </div>
       </div>

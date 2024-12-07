@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Trash2, Edit } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const FlightSchedule = () => {
   const [flights, setFlights] = useState([]);
@@ -14,9 +16,8 @@ const FlightSchedule = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editFlightId, setEditFlightId] = useState(null);
 
-  const API_URL = "http://localhost:5000/api/flights"; // Update with your API URL
+  const API_URL = "http://localhost:5000/api/flights";
 
-  // Fetch flights on component mount
   useEffect(() => {
     fetchFlights();
   }, []);
@@ -27,12 +28,13 @@ const FlightSchedule = () => {
       setFlights(response.data);
     } catch (error) {
       console.error("Error fetching flights:", error);
+      toast.error("Error fetching flights.");
     }
   };
 
   const handleAddFlight = async () => {
     if (!newFlight.flightNo || !newFlight.origin || !newFlight.destination || !newFlight.departure || !newFlight.arrival) {
-      alert("Please fill in all fields");
+      toast.warn("Please fill in all fields.");
       return;
     }
     try {
@@ -45,13 +47,14 @@ const FlightSchedule = () => {
         seatCapacity: 200,
         availableSeats: 200,
         price: 100,
-        crewAssigned: [], // Placeholder
+        crewAssigned: [],
       });
       setFlights((prevFlights) => [...prevFlights, response.data]);
+      toast.success("Flight added successfully!");
       resetForm();
     } catch (error) {
       console.error("Error adding flight:", error);
-      alert("Failed to add flight. Check console for details.");
+      toast.error("Failed to add flight.");
     }
   };
 
@@ -82,10 +85,11 @@ const FlightSchedule = () => {
           flight._id === editFlightId ? response.data : flight
         )
       );
+      toast.success("Flight updated successfully!");
       resetForm();
     } catch (error) {
       console.error("Error saving flight edits:", error);
-      alert("Failed to save changes. Check console for details.");
+      toast.error("Failed to save changes.");
     }
   };
 
@@ -93,9 +97,10 @@ const FlightSchedule = () => {
     try {
       await axios.delete(`${API_URL}/${id}`);
       setFlights((prevFlights) => prevFlights.filter((flight) => flight._id !== id));
+      toast.success("Flight deleted successfully!");
     } catch (error) {
       console.error("Error deleting flight:", error);
-      alert("Failed to delete flight. Check console for details.");
+      toast.error("Failed to delete flight.");
     }
   };
 
@@ -106,109 +111,119 @@ const FlightSchedule = () => {
   };
 
   return (
-    <div className="p-6 bg-gradient-to-br from-gray-900 to-gray-700 min-h-[600px] text-white">
-      <div className="flex flex-wrap md:flex-nowrap gap-6">
-        <div className="w-full md:w-1/3 bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">{isEditing ? "Edit Flight" : "Add New Flight"}</h2>
-          <div className="space-y-4">
-            <input
-              type="text"
-              placeholder="Flight No."
-              value={newFlight.flightNo}
-              onChange={(e) => setNewFlight({ ...newFlight, flightNo: e.target.value })}
-              className="w-full p-3 border rounded-md text-black"
-            />
-            <input
-              type="text"
-              placeholder="Origin"
-              value={newFlight.origin}
-              onChange={(e) => setNewFlight({ ...newFlight, origin: e.target.value })}
-              className="w-full p-3 border rounded-md text-black"
-            />
-            <input
-              type="text"
-              placeholder="Destination"
-              value={newFlight.destination}
-              onChange={(e) => setNewFlight({ ...newFlight, destination: e.target.value })}
-              className="w-full p-3 border rounded-md text-black"
-            />
-            <input
-              type="datetime-local"
-              value={newFlight.departure}
-              onChange={(e) => setNewFlight({ ...newFlight, departure: e.target.value })}
-              className="w-full p-3 border rounded-md text-black"
-            />
-            <input
-              type="datetime-local"
-              value={newFlight.arrival}
-              onChange={(e) => setNewFlight({ ...newFlight, arrival: e.target.value })}
-              className="w-full p-3 border rounded-md text-black"
-            />
-            <button
-              onClick={isEditing ? handleSaveEdit : handleAddFlight}
-              className="w-full bg-yellow-500 py-3 rounded-md hover:bg-yellow-600 transition-colors"
-            >
-              {isEditing ? "Save Changes" : "Add Flight"}
-            </button>
-          </div>
+    <div>
+    <ToastContainer />
+    <div className="flex items-center justify-between px-6 py-4 bg-secondary">
+      <h1 className="text-xl font-bold text-white">Flight Schedule</h1>
+    </div>
+  
+    <div className="p-6 bg-white min-h-[600px] text-black space-y-6">
+      {/* Add Flight Form */}
+      <div className="bg-gray-200 p-6 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">
+          {isEditing ? "Edit Flight" : "Add New Flight"}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="Flight No."
+            value={newFlight.flightNo}
+            onChange={(e) => setNewFlight({ ...newFlight, flightNo: e.target.value })}
+            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+          />
+          <input
+            type="text"
+            placeholder="Origin"
+            value={newFlight.origin}
+            onChange={(e) => setNewFlight({ ...newFlight, origin: e.target.value })}
+            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+          />
+          <input
+            type="text"
+            placeholder="Destination"
+            value={newFlight.destination}
+            onChange={(e) => setNewFlight({ ...newFlight, destination: e.target.value })}
+            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+          />
+          <input
+            type="datetime-local"
+            value={newFlight.departure}
+            onChange={(e) => setNewFlight({ ...newFlight, departure: e.target.value })}
+            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+          />
+          <input
+            type="datetime-local"
+            value={newFlight.arrival}
+            onChange={(e) => setNewFlight({ ...newFlight, arrival: e.target.value })}
+            className="w-full p-3 bg-white text-black border rounded-md outline-black"
+          />
         </div>
-
-        <div className="w-full md:w-2/3 bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-xl font-semibold mb-4">Flight Schedule</h2>
-          <div className="overflow-x-auto max-h-[400px]">
-            <table className="table-auto w-full border-collapse border border-gray-600">
-              <thead className="sticky top-0 bg-gray-700 z-10">
-                <tr className="bg-gray-700">
-                  <th className="p-4 border border-gray-600 text-left">Flight No.</th>
-                  <th className="p-4 border border-gray-600 text-left">Origin</th>
-                  <th className="p-4 border border-gray-600 text-left">Destination</th>
-                  <th className="p-4 border border-gray-600 text-left">Departure</th>
-                  <th className="p-4 border border-gray-600 text-left">Arrival</th>
-                  <th className="p-4 border border-gray-600 text-center">Actions</th>
+        <button
+          onClick={isEditing ? handleSaveEdit : handleAddFlight}
+          className="mt-4 w-full py-3 text-white bg-accent-orange-light rounded-md hover:bg-gray-800 transition"
+        >
+          {isEditing ? "Save Changes" : "Add Flight"}
+        </button>
+      </div>
+  
+      {/* Flight Schedule Table */}
+      <div className="bg-gray-200 p-4 rounded-lg shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">Flight Schedule</h2>
+        <div className="overflow-auto max-h-[400px] scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-gray-300">
+          <table className="table-auto w-full border-collapse border border-gray-600">
+            <thead className="sticky top-0 bg-gray-300 z-10">
+              <tr>
+                <th className="p-2 border border-gray-600 text-black text-left">Flight No.</th>
+                <th className="p-2 border border-gray-600 text-black text-left">Origin</th>
+                <th className="p-2 border border-gray-600 text-black text-left">Destination</th>
+                <th className="p-2 border border-gray-600 text-black text-left">Departure</th>
+                <th className="p-2 border border-gray-600 text-black text-left">Arrival</th>
+                <th className="p-2 border border-gray-600 text-black text-center">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {flights.length === 0 ? (
+                <tr>
+                  <td colSpan="6" className="p-2 text-center text-gray-500">
+                    No flights available.
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {flights.length === 0 ? (
-                  <tr>
-                    <td colSpan="6" className="p-4 text-center text-gray-500">
-                      No flights available.
+              ) : (
+                flights.map((flight) => (
+                  <tr key={flight._id} className="hover:bg-gray-100">
+                    <td className="p-2 border border-gray-600">{flight.flightNumber}</td>
+                    <td className="p-2 border border-gray-600">{flight.origin}</td>
+                    <td className="p-2 border border-gray-600">{flight.destination}</td>
+                    <td className="p-2 border border-gray-600">
+                      {new Date(flight.departureTime).toLocaleString()}
+                    </td>
+                    <td className="p-2 border border-gray-600">
+                      {new Date(flight.arrivalTime).toLocaleString()}
+                    </td>
+                    <td className="p-2 border border-gray-600 text-center flex justify-center space-x-4">
+                      <button
+                        onClick={() => handleEditFlight(flight._id)}
+                        className="px-4 py-2 text-white bg-accent-orange-light rounded-md hover:bg-gray-800 transition"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteFlight(flight._id)}
+                        className="px-4 py-2 text-white bg-red-500 rounded-md hover:bg-red-700 transition"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
-                ) : (
-                  flights.map((flight) => (
-                    <tr key={flight._id} className="hover:bg-gray-700">
-                      <td className="p-4 border border-gray-600">{flight.flightNumber}</td>
-                      <td className="p-4 border border-gray-600">{flight.origin}</td>
-                      <td className="p-4 border border-gray-600">{flight.destination}</td>
-                      <td className="p-4 border border-gray-600">
-                        {new Date(flight.departureTime).toLocaleString()}
-                      </td>
-                      <td className="p-4 border border-gray-600">
-                        {new Date(flight.arrivalTime).toLocaleString()}
-                      </td>
-                      <td className="p-4 border border-gray-600 text-center">
-                        <button
-                          onClick={() => handleEditFlight(flight._id)}
-                          className="text-yellow-500 mx-2"
-                        >
-                          <Edit className="inline w-5 h-5" />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteFlight(flight._id)}
-                          className="text-red-500 mx-2"
-                        >
-                          <Trash2 className="inline w-5 h-5" />
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
+  </div>
+  
   );
 };
 

@@ -4,7 +4,7 @@ const bookingSchema = new mongoose.Schema({
   passengerId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
   flightId: { type: mongoose.Schema.Types.ObjectId, ref: 'Flight', required: true },
   bookingDate: { type: Date, default: Date.now },
-  seatNumbers: [{ type: String, required: true }],
+  seatNumber: { type: String, required: true },
   status: { type: String, enum: ['Confirmed', 'Cancelled'], default: 'Confirmed' },
   paymentStatus: { type: String, enum: ['Paid', 'Pending'], default: 'Pending' },
   amountPaid: { type: Number, required: true },
