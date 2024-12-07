@@ -36,4 +36,5 @@ router.post("/:flightId/payments", addPayment);
 // Historical Data Routes
 router.get("/:flightId/history", getHistoricalDataByFlight);
 router.post("/:flightId/history", addHistoricalData);
+
 module.exports = router;

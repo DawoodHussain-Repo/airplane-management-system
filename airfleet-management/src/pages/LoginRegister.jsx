@@ -30,11 +30,16 @@ const LoginRegister = () => {
         // Store token, role, and email in localStorage
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('role', response.data.role);
-  
+        localStorage.setItem('userId', response.data.userId); // Store the unique userId (passenger or crew ID)
+
         // If role is 'Crew', store email in localStorage
         if (response.data.role === 'Crew') {
           localStorage.setItem('crewEmail', formData.email);
         }
+        if (response.data.role === 'Passenger') {
+          localStorage.setItem('PassID', response.data.userId); // Correctly storing the userId for the Passenger role
+        }
+        
   
         setMessage('Login successful! Redirecting...');
   

@@ -25,7 +25,6 @@ exports.registerUser = async (req, res) => {
   }
 };// authController.js
 
-
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -41,8 +40,13 @@ exports.loginUser = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
-   
-    res.json({ token, role: user.role });
+
+    // Send the token, role, and userId (passenger ID) in the response
+    res.json({
+      token,
+      role: user.role,
+      userId: user._id, // Add this line to send the user ID (passenger ID) to the client
+    });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }
