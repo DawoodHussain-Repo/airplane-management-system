@@ -1,28 +1,65 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const LoyaltyProgram = () => {
-  // Mock data for the user's frequent flyer points
-  const [points, setPoints] = useState(1200); // Example: 1200 points
+  const [points, setPoints] = useState(0);  // Set initial points to 0
   const [redeemed, setRedeemed] = useState(null);
   const [redeemAmount, setRedeemAmount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleRedeemPoints = () => {
+  // Replace with the actual user ID
+  const userId = "6754a7635e871cd57ec8f22a"; 
+
+  // Fetch user's loyalty points on component mount
+  useEffect(() => {
+    const fetchPoints = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5000/api/users/loyalty/${userId}`);
+        setPoints(response.data.loyaltyPoints);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to fetch points.");
+        setLoading(false);
+      }
+    };
+
+    fetchPoints();
+  }, [userId]);
+
+  const handleRedeemPoints = async () => {
     if (redeemAmount <= 0) {
       alert("Please enter a valid amount to redeem.");
     } else if (redeemAmount > points) {
       alert("You don't have enough points to redeem this amount.");
     } else {
-      setPoints(points - redeemAmount);
-      setRedeemed(redeemAmount);
-      setRedeemAmount(0); // Reset input after redemption
+      try {
+        const response = await axios.put(
+          `http://localhost:5000/api/users/loyalty/redeem/${userId}`,
+          { pointsToRedeem: redeemAmount }
+        );
+        setPoints(response.data.remainingPoints);
+        setRedeemed(redeemAmount);
+        setRedeemAmount(0); // Reset input after redemption
+      } catch (err) {
+        alert("Error redeeming points.");
+      }
     }
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
       <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold mb-4">Loyalty Program</h2>
-        
+
         {/* Display Current Points */}
         <div className="mb-6">
           <p className="text-xl">

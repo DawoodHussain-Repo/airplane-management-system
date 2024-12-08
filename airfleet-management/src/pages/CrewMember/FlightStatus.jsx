@@ -1,131 +1,172 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import { FaPlaneDeparture } from "react-icons/fa";
+import axios from "axios";
 
 const FlightStatusManagement = () => {
   const [flights, setFlights] = useState([]);
   const [selectedFlight, setSelectedFlight] = useState(null);
-  const [milestone, setMilestone] = useState('');
-  const [statusUpdates, setStatusUpdates] = useState([]);
-  const [updateMessage, setUpdateMessage] = useState('');
+  const [status, setStatus] = useState("");
+  const [updateMessage, setUpdateMessage] = useState("");
 
   useEffect(() => {
-    // Fetch all flights from the backend
-    axios.get('http://localhost:5000/api/flights')
-      .then(response => setFlights(response.data))
-      .catch(error => console.error('Error fetching flights:', error));
+    axios
+      .get("http://localhost:5000/api/flights")
+      .then((response) => setFlights(response.data))
+      .catch((error) => console.error("Error fetching flights:", error));
   }, []);
 
-  // Handle the form submission to update flight status
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (selectedFlight && milestone) {
-      const updatedStatus = {
-        status: milestone,
-        location: "40.7128° N, 74.0060° W",  // You can dynamically update this as well
-        speed: "900 km/h",  // You can dynamically update this as well
-        altitude: "36,000 ft",  // You can dynamically update this as well
-      };
-
-      axios.put(`http://localhost:5000/api/flights/${selectedFlight._id}`, updatedStatus)
-        .then(response => {
-          setUpdateMessage(`Milestone "${milestone}" has been updated for flight ${selectedFlight.flightNumber}.`);
-          setStatusUpdates(prevUpdates => [
-            ...prevUpdates,
-            { flightNumber: selectedFlight.flightNumber, status: `${milestone} - ${new Date().toLocaleString()}` }
-          ]);
-          setMilestone(""); // Reset milestone input
+    if (selectedFlight && status) {
+      const updatedStatus = { status };
+  
+      axios
+        .put(`http://localhost:5000/api/flights/${selectedFlight._id}`, updatedStatus)
+        .then(() => {
+          setUpdateMessage(`Status "${status}" updated for flight ${selectedFlight.flightNumber}.`);
+          setSelectedFlight((prev) => ({
+            ...prev,
+            status,
+          }));
+  
+          // Reload the page to fetch the updated list of flights
+          window.location.reload();
         })
-        .catch(error => {
-          console.error('Error updating flight status:', error);
-          setUpdateMessage('Error updating flight status. Please try again.');
+        .catch((error) => {
+          console.error("Error updating flight status:", error);
+          setUpdateMessage("Error updating flight status. Please try again.");
         });
     } else {
-      setUpdateMessage('Please select a flight and milestone.');
+      setUpdateMessage("Please select a flight and status.");
+    }
+  };
+  
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "Completed":
+        return "bg-green-500 text-white";
+      case "In Air":
+        return "bg-blue-500 text-white";
+      case "Scheduled":
+        return "bg-yellow-500 text-white";
+      default:
+        return "bg-gray-500 text-white";
     }
   };
 
   return (
-    <div className="min-h-screen overflow-y-auto bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <div className="flex flex-col md:flex-row gap-6">
-        {/* Sidebar for flight selection */}
-        <div className="w-full md:w-1/3 bg-gray-800 p-6 rounded-lg shadow-lg">
-          <h2 className="text-2xl font-bold mb-4">Select Flight</h2>
-          <div className="space-y-4 overflow-y-auto max-h-[500px]"> {/* Scrollable container */}
+    <div className="min-h-screen bg-gray-100 text-gray-800">
+      <div className="flex flex-col md:flex-row h-screen">
+        {/* Sidebar (hidden on smaller screens) */}
+        <div className="w-full md:w-1/4 bg-gray-200 p-4 h-screen overflow-y-auto scrollbar-thin scrollbar-track-gray-300 md:block hidden">
+          <h3 className="text-3xl font-medium mb-6">Assigned Flights</h3>
+          <div className="space-y-4">
             {flights.map((flight) => (
               <div
                 key={flight._id}
-                className="border p-4 rounded-lg bg-gray-700 hover:bg-gray-600 cursor-pointer"
+                className={`flex items-center p-4 rounded-lg shadow-md bg-white cursor-pointer transition-transform transform hover:scale-105 hover:bg-secondary hover:text-white ${
+                  selectedFlight && selectedFlight._id === flight._id ? "bg-secondary text-green-500" : ""
+                }`}
                 onClick={() => setSelectedFlight(flight)}
               >
-                <h4 className="font-semibold text-gray-300">{flight.flightNumber}</h4>
-                <p className="text-gray-400">{flight.departureTime} - {flight.destination}</p>
-                <p className="text-sm text-gray-500">Status: {flight.status}</p>
+                <div className="flex-shrink-0 text-secondary mr-4">
+                  <FaPlaneDeparture size={24} />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg">{flight.flightNumber}</h4>
+                  <p className="text-sm">Departure: {flight.departureTime}</p>
+                  <p className="text-sm">Destination: {flight.destination}</p>
+                  <span
+                    className={`inline-block mt-2 px-3 py-1 text-sm rounded-full font-semibold ${getStatusLabel(
+                      flight.status
+                    )}`}
+                  >
+                    {flight.status}
+                  </span>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="flex flex-col w-full md:w-2/3 gap-6">
-          {/* Milestone Update Form */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-            <h3 className="text-2xl font-bold mb-4">Update Flight Milestone</h3>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {/* Display selected flight details */}
-              {selectedFlight ? (
-                <div className="bg-gray-700 p-4 rounded-lg">
-                  <h4 className="font-semibold text-gray-300">Selected Flight: {selectedFlight.flightNumber}</h4>
-                  <p className="text-gray-400">{selectedFlight.departureTime} - {selectedFlight.destination}</p>
-                </div>
-              ) : (
-                <p className="text-gray-400">Please select a flight to update its status.</p>
-              )}
+        {/* Dropdown for smaller screens */}
+        <div className="w-full md:hidden p-4">
+          <select
+            className="w-full p-3 border rounded-lg bg-gray-100"
+            onChange={(e) => {
+              const flight = flights.find(f => f._id === e.target.value);
+              setSelectedFlight(flight);
+            }}
+          >
+            <option value="">Select Flight</option>
+            {flights.map((flight) => (
+              <option key={flight._id} value={flight._id}>
+                {flight.flightNumber} - {flight.departureTime}
+              </option>
+            ))}
+          </select>
+        </div>
 
-              {/* Milestone Input */}
-              <div className="flex justify-between items-center">
-                <input
-                  type="text"
-                  value={milestone}
-                  onChange={(e) => setMilestone(e.target.value)}
-                  placeholder="Enter milestone (e.g., Boarding completed)"
-                  className="bg-gray-700 text-white p-3 rounded-lg w-full"
-                />
-                <button
-                  type="submit"
-                  className="w-1/4 bg-yellow-500 py-3 rounded-lg hover:bg-yellow-600 transition-all font-semibold ml-4"
+        {/* Main Section */}
+        <div className="w-full md:w-3/4 bg-white p-8 shadow-md h-screen overflow-y-auto scrollbar-none">
+          <h3 className="text-2xl font-medium text-gray-800 mb-6 border-b pb-4">Update Flight Status</h3>
+          {selectedFlight ? (
+            <div className="bg-gray-50 p-6 rounded-lg border shadow-md">
+              <h4 className="text-lg font-semibold mb-2">Flight Number: {selectedFlight.flightNumber}</h4>
+              <p>Departure: {selectedFlight.departureTime}</p>
+              <p>Destination: {selectedFlight.destination}</p>
+              <p className="mt-2">
+                <span
+                  className={`inline-block px-3 py-1 rounded-full text-sm ${getStatusLabel(selectedFlight.status)}`}
                 >
-                  Update Status
-                </button>
-              </div>
-            </form>
+                  {selectedFlight.status}
+                </span>
+              </p>
+            </div>
+          ) : (
+            <p className="text-gray-500">Please select a flight to update its status.</p>
+          )}
+          <form onSubmit={handleSubmit} className="mt-6">
+            <div className="flex items-center gap-4">
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                className="w-full p-3 border rounded-lg bg-gray-100"
+              >
+                <option value="">Select Status</option>
+                <option value="Scheduled">Scheduled</option>
+                <option value="In Air">In Air</option>
+                <option value="Completed">Completed</option>
+              </select>
+              <button
+                type="submit"
+                className="bg-accent-orange-light text-white md:px-4 md:py-2  p-1 text-sm md:text-lg rounded-lg shadow hover:bg-gray-800 transition"
+              >
+                Update Status
+              </button>
+            </div>
+          </form>
+          {updateMessage && <p className="mt-4 text-green-600 font-semibold">{updateMessage}</p>}
 
-            {/* Display request message */}
-            {updateMessage && (
-              <div className="mt-6 text-center">
-                <p className="text-gray-300">{updateMessage}</p>
+          {/* Updated Flight Status in Lower Section */}
+          {selectedFlight && (
+            <div className="mt-8">
+              <h3 className="text-xl font-medium mb-4">Updated Flight Status</h3>
+              <div className="bg-gray-100 p-4 rounded-lg shadow-md">
+                <h4 className="font-semibold">{selectedFlight.flightNumber}</h4>
+                <p>{selectedFlight.status}</p>
+                <p className="text-sm">{selectedFlight.departureTime}</p>
+                <p className="text-sm">{selectedFlight.destination}</p>
+                <span
+                  className={`inline-block mt-2 px-3 py-1 text-sm rounded-full font-semibold ${getStatusLabel(
+                    selectedFlight.status
+                  )}`}
+                >
+                  {selectedFlight.status}
+                </span>
               </div>
-            )}
-          </div>
-
-          {/* Status Updates */}
-          <div className="bg-gray-800 p-6 rounded-lg shadow-lg mt-6">
-            <h3 className="text-2xl font-bold mb-4">Flight Status Updates</h3>
-            {statusUpdates.length > 0 ? (
-              <ul className="space-y-4">
-                {statusUpdates.map((update, index) => (
-                  <li
-                    key={index}
-                    className="border p-4 rounded-lg bg-gray-700"
-                  >
-                    <p className="font-semibold text-gray-300">{update.flightNumber}</p>
-                    <p className="text-gray-400">{update.status}</p>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="text-center text-gray-400">No status updates available.</p>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </div>

@@ -21,10 +21,21 @@ const ProfileUpdate = () => {
 
   const [loading, setLoading] = useState(false);
 
-  // Fetch existing profile data dynamically based on logged-in crew email
-  const fetchProfile = async (crewEmail) => {
+  // Fetch existing profile data dynamically based on logged-in crew email using JWT token
+  const fetchProfile = async () => {
+    const token = localStorage.getItem("jwtToken"); // Get JWT token from localStorage
+    if (!token) {
+      console.error("No JWT token found in localStorage.");
+      return;
+    }
+
     try {
-      const response = await fetch(`http://localhost:5000/api/crew/getProfile/${crewEmail}`);
+      const response = await fetch("http://localhost:5000/api/crew/getProfile", {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
       if (!response.ok) {
         throw new Error("Failed to fetch profile data.");
       }
@@ -43,12 +54,7 @@ const ProfileUpdate = () => {
   };
 
   useEffect(() => {
-    const crewEmail = localStorage.getItem("crewEmail"); // Get crew email from localStorage
-    if (crewEmail) {
-      fetchProfile(crewEmail); // Fetch profile using the email from localStorage
-    } else {
-      console.error("No crew email found in localStorage.");
-    }
+    fetchProfile(); // Fetch profile data using JWT token
   }, []);
 
   // Handle input changes
@@ -81,7 +87,10 @@ const ProfileUpdate = () => {
     try {
       const response = await fetch("http://localhost:5000/api/crew/updateProfile", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("jwtToken")}`,
+        },
         body: JSON.stringify(userData),
       });
       if (!response.ok) {
@@ -96,7 +105,7 @@ const ProfileUpdate = () => {
         timer: 2000,
       });
       // Refresh the profile data to reflect changes
-      fetchProfile(userData.email);
+      fetchProfile();
     } catch (error) {
       console.error("Error updating profile:", error);
       Swal.fire({
@@ -110,20 +119,20 @@ const ProfileUpdate = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <h2 className="text-3xl font-semibold text-center mb-6">Profile Update</h2>
+    <div className="min-h-screen bg-white text-gray-800 p-6">
+      <h2 className="text-3xl font-medium text-center mb-6">Profile Update</h2>
 
-      <form onSubmit={handleSubmit} className="bg-gray-800 p-6 rounded-lg shadow-lg">
+      <form onSubmit={handleSubmit} className="bg-gray-200 p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
         {/* Personal Information */}
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-4">Personal Information</h3>
+          <h3 className="text-xl font-semibold text-secondary mb-4">Personal Information</h3>
           <input
             type="text"
             name="name"
             placeholder="Full Name"
             value={userData.name}
             onChange={handleInputChange}
-            className="w-full p-3 mb-4 bg-gray-700 rounded-lg text-white border border-gray-600 focus:ring focus:ring-yellow-500"
+            className="w-full sm:w-3/4 p-3 mb-4 bg-white rounded-lg text-gray-800 border border-black focus:ring focus:ring-yellow-500"
           />
           <input
             type="email"
@@ -131,7 +140,7 @@ const ProfileUpdate = () => {
             placeholder="Email"
             value={userData.email}
             onChange={handleInputChange}
-            className="w-full p-3 mb-4 bg-gray-700 rounded-lg text-white border border-gray-600 focus:ring focus:ring-yellow-500"
+            className="w-full sm:w-3/4 p-3 mb-4 bg-white rounded-lg text-gray-800 border border-black focus:ring focus:ring-yellow-500"
           />
           <input
             type="tel"
@@ -139,16 +148,16 @@ const ProfileUpdate = () => {
             placeholder="Phone Number"
             value={userData.phone}
             onChange={handleInputChange}
-            className="w-full p-3 mb-4 bg-gray-700 rounded-lg text-white border border-gray-600 focus:ring focus:ring-yellow-500"
+            className="w-full sm:w-3/4 p-3 mb-4 bg-white rounded-lg text-gray-800 border border-black focus:ring focus:ring-yellow-500"
           />
-          <h4 className="text-lg font-semibold mb-2">Emergency Contact</h4>
+          <h4 className="text-lg font-semibold text-secondary mb-2">Emergency Contact</h4>
           <input
             type="text"
             name="emergencyContactName"
             placeholder="Emergency Contact Name"
             value={userData.emergencyContactName}
             onChange={handleInputChange}
-            className="w-full p-3 mb-4 bg-gray-700 rounded-lg text-white border border-gray-600 focus:ring focus:ring-yellow-500"
+            className="w-full sm:w-3/4 p-3 mb-4 bg-white rounded-lg text-gray-800 border border-black focus:ring focus:ring-yellow-500"
           />
           <input
             type="tel"
@@ -156,31 +165,31 @@ const ProfileUpdate = () => {
             placeholder="Emergency Contact Phone"
             value={userData.emergencyContactPhone}
             onChange={handleInputChange}
-            className="w-full p-3 mb-4 bg-gray-700 rounded-lg text-white border border-gray-600 focus:ring focus:ring-yellow-500"
+            className="w-full sm:w-3/4 p-3 mb-4 bg-white rounded-lg text-gray-800 border border-black focus:ring focus:ring-yellow-500"
           />
         </div>
 
         {/* Availability Settings */}
         <div className="mb-6">
-          <h3 className="text-xl font-semibold mb-4">Modify Availability</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <h3 className="text-xl font-semibold text-secondary mb-4">Modify Availability</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {Object.keys(userData.availability).map((day) => (
               <div key={day}>
-                <label className="block text-gray-300">{day.charAt(0).toUpperCase() + day.slice(1)}</label>
+                <label className="block text-gray-600">{day.charAt(0).toUpperCase() + day.slice(1)}</label>
                 <div className="flex space-x-4">
                   <input
                     type="time"
                     name={`availability-${day}-start`}
                     value={userData.availability[day].start}
                     onChange={handleInputChange}
-                    className="w-1/2 p-3 bg-gray-700 rounded-lg text-white border border-gray-600"
+                    className="w-1/2 p-3 bg-white rounded-lg text-gray-800 border border-black"
                   />
                   <input
                     type="time"
                     name={`availability-${day}-end`}
                     value={userData.availability[day].end}
                     onChange={handleInputChange}
-                    className="w-1/2 p-3 bg-gray-700 rounded-lg text-white border border-gray-600"
+                    className="w-1/2 p-3 bg-white rounded-lg text-gray-800 border border-black"
                   />
                 </div>
               </div>

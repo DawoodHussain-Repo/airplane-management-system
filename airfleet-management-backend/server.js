@@ -11,6 +11,8 @@ const feedbackRoutes = require('./routes/feedbackRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const withdrawalRoutes = require('./routes/withdrawRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');  // Import the new booking routes
+const passengerRoutes = require('./routes/updateProfile');
+const airportRoutes = require('./routes/airportRoutes');
 const app = express();
 
 // Connect to MongoDB
@@ -35,7 +37,9 @@ app.use('/api', feedbackRoutes);
 app.use('/api/admin', adminRoutes);
 app.use("/api/withdrawals", withdrawalRoutes);
 app.use('/api/bookings', bookingRoutes); // Use the booking routes
-
+app.use('/api/passengers', passengerRoutes);
+// Routes
+app.use('/api/airport', airportRoutes);
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

@@ -11,7 +11,7 @@ const CrewLayout = () => {
 
       {/* Main Content Area */}
       <div
-        className="flex-1 p-6 flex justify-center items-center w-full z-10"
+        className="w-full h-full"
         style={{
           backgroundColor: "#fdfd96", // Yellowish fallback
           backgroundImage: `url(${planeImage})`,

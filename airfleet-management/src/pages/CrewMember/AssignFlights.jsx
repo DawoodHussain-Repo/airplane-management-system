@@ -39,28 +39,30 @@ const AssignedFlights = () => {
   };
 
   return (
-    <div className="container mx-auto p-6 lg:p-12 bg-gray-800">
-      <h2 className="text-3xl font-semibold text-center text-gray-100 mb-8">
+    <div className="min-h-screen bg-white px-6 lg:px-12">
+      {/* Header */}
+      <h2 className="text-3xl font-medium text-center text-gray-800 mb-8">
         Assigned Flights
       </h2>
 
-      <div className="overflow-x-auto bg-white p-4 rounded-lg shadow-lg">
-        <table className="min-w-full bg-white rounded-lg shadow-md">
-          <thead className="bg-gray-800 text-white">
+      {/* Table Section */}
+      <div className="overflow-x-auto bg-gray-200 rounded-lg shadow-lg scrollbar-thin scrollbar-thumb-secondary scrollbar-track-gray-100">
+        <table className="table-auto  w-full bg-white rounded-lg shadow-md">
+          <thead className="bg-secondary text-white">
             <tr>
-              <th className="py-4 px-6 text-left text-sm font-medium text-gray-200">
+              <th className="py-2 px-2 md:py-4 md:px-6 text-left text-xs md:text-base font-medium">
                 Flight Number
               </th>
-              <th className="py-4 px-6 text-left text-sm font-medium text-gray-200">
+              <th className="py-1 px-1 md:py-4 md:px-6 text-left text-xs md:text-base font-medium">
                 Departure Time
               </th>
-              <th className="py-4 px-6 text-left text-sm font-medium text-gray-200">
+              <th className="py-1 px-1 md:py-4 md:px-6 text-left text-xs md:text-base font-medium">
                 Destination
               </th>
-              <th className="py-4 px-6 text-left text-sm font-medium text-gray-200">
+              <th className="py-1 px-1 md:py-4 md:px-6 text-left text-xs md:text-base font-medium">
                 Status
               </th>
-              <th className="py-4 px-6 text-left text-sm font-medium text-gray-200">
+              <th className="py-1 px-1 md:py-4 md:px-6 text-left text-xs md:text-base font-medium">
                 Action
               </th>
             </tr>
@@ -69,26 +71,34 @@ const AssignedFlights = () => {
             {flights.map((flight) => (
               <tr
                 key={flight._id}
-                className="border-t border-b hover:bg-gray-200 transition duration-300"
+                className="border-t border-b hover:bg-gray-100 transition duration-300"
               >
-                <td className="py-4 px-6">{flight.flightNumber}</td>
-                <td className="py-4 px-6">
+                <td className="py-1 px-1 text-xs md:text-base">
+                  {flight.flightNumber}
+                </td>
+                <td className="py-1 px-1 text-xs md:text-base">
                   {new Date(flight.departureTime).toLocaleString()}
                 </td>
-                <td className="py-4 px-6">{flight.destination}</td>
-                <td className="py-4 px-6">
+                <td className="py-1 px-1 text-xs md:text-base">
+                  {flight.destination}
+                </td>
+                <td className="py-1 px-1 text-xs md:text-base">
                   <span
-                    className={`inline-block py-1 px-3 rounded-full text-white text-xs ${
-                      flight.status === "In Air" ? "bg-green-500" : "bg-gray-500"
+                    className={`inline-block py-1 px-3 rounded-full text-white text-xs md:text-sm ${
+                      flight.status === "Completed"
+                        ? "bg-green-700"
+                        : flight.status === "In Air"
+                        ? "bg-blue-600"
+                        : "bg-accent-orange-light"
                     }`}
                   >
                     {flight.status}
                   </span>
                 </td>
-                <td className="py-4 px-6">
+                <td className="py-1 px-1 text-xs md:text-base">
                   <button
                     onClick={() => fetchFlightDetails(flight._id)}
-                    className="bg-gray-800 text-white hover:bg-gray-700 py-2 px-6 rounded-md text-xs"
+                    className="bg-bg-secondary text-white hover:bg-gray-700 py-2 px-2 rounded-md text-xs transition duration-200"
                   >
                     View Details
                   </button>

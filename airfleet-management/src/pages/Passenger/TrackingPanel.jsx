@@ -1,17 +1,39 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const TrackingPanel = () => {
-  // Load booking data from local storage
-  const storedData = JSON.parse(localStorage.getItem("bookingData"));
-
-  const [bookingData, setBookingData] = useState(storedData || null);
+  const [bookingData, setBookingData] = useState(null);
   const [flightStatus, setFlightStatus] = useState("On Time");
   const [transactionHistory, setTransactionHistory] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // Fetching real-time tracking information (mocked)
+  // Fetch booking data from the API when the component mounts
+  useEffect(() => {
+    const fetchBookingData = async () => {
+      try {
+        // Retrieve the passenger ID from localStorage
+        const passengerId = localStorage.getItem("PassID");
+
+        if (passengerId) {
+          // Make an API call to get the booking information
+          const response = await axios.get(`http://localhost:5000/api/bookings/bookings/${passengerId}`);
+          setBookingData(response.data[0]); // Assuming the response contains an array, we get the first element
+        } else {
+          console.error("Passenger ID not found in localStorage.");
+        }
+      } catch (err) {
+        console.error("Error fetching booking data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchBookingData();
+  }, []);
+
+  // Simulate flight status updates (mocked)
   useEffect(() => {
     if (bookingData) {
-      // Simulate a function that fetches flight status updates from an API
       const flightStatusUpdate = setInterval(() => {
         setFlightStatus(getRandomFlightStatus());
       }, 5000); // Updating every 5 seconds for demo
@@ -32,18 +54,11 @@ const TrackingPanel = () => {
       date: new Date().toLocaleString(),
       amount: "$500",
       status: "Completed",
-      seat: bookingData.selectedSeat ? `${bookingData.selectedSeat.row}${bookingData.selectedSeat.seat}` : "Not Selected",
+      seat: bookingData?.seatNumbers ? bookingData.seatNumbers.join(", ") : "Not Selected",
     };
 
     setTransactionHistory([...transactionHistory, newTransaction]);
   };
-
-  // Update local storage whenever booking data changes
-  useEffect(() => {
-    if (bookingData) {
-      localStorage.setItem("bookingData", JSON.stringify(bookingData));
-    }
-  }, [bookingData]);
 
   // Display the booking and transaction details
   return (
@@ -51,13 +66,16 @@ const TrackingPanel = () => {
       <div className="max-w-4xl mx-auto bg-gray-700 p-6 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold mb-4">Tracking Panel</h2>
 
-        {bookingData ? (
+        {loading ? (
+          <p>Loading booking details...</p>
+        ) : bookingData ? (
           <div>
             <div className="booking-details mb-6">
               <h3 className="text-2xl font-semibold">Booking Details</h3>
-              <p>Flight: {bookingData.selectedSeat ? `AF100` : "Not Booked"}</p>
-              <p>Seat: {bookingData.selectedSeat ? `${bookingData.selectedSeat.row}${bookingData.selectedSeat.seat}` : "Not Selected"}</p>
+              <p>Flight: {bookingData.flightId?.flightNumber || "Not Available"}</p>
+              <p>Seat(s): {bookingData.seatNumbers?.join(", ") || "Not Selected"}</p>
               <p>Payment Status: {bookingData.paymentStatus}</p>
+              <p>Amount Paid: ${bookingData.amountPaid}</p>
             </div>
 
             <div className="flight-status mb-6">
@@ -80,7 +98,7 @@ const TrackingPanel = () => {
                     <p>Date: {transaction.date}</p>
                     <p>Amount: {transaction.amount}</p>
                     <p>Status: {transaction.status}</p>
-                    <p>Seat: {transaction.seat}</p>
+                    <p>Seat(s): {transaction.seat}</p>
                   </li>
                 ))}
               </ul>

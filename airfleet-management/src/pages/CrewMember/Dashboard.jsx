@@ -1,135 +1,146 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-
+import "./crew.css";
+import logo from "../../assets/images/airplane.png";
+import straightlogo from "../../assets/images/offline.png";
 const Dashboard = () => {
-  const crewEmail = localStorage.getItem("crewEmail"); // Get crew email from local storage
+  const crewEmail = localStorage.getItem("crewEmail");
 
-  const [assignedFlights, setAssignedFlights] = useState([]); // Flights assigned to the crew
-  const [otherFlights, setOtherFlights] = useState([]); // Flights for the carousel/scroll
-  const [notifications, setNotifications] = useState([]); // Notifications for the specific crew member
-  const [loading, setLoading] = useState(true); // Loading state for API calls
+  const [assignedFlights, setAssignedFlights] = useState([]);
+  const [otherFlights, setOtherFlights] = useState([]);
+  const [notifications, setNotifications] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Fetch assigned flights (assuming an API returns an array of flights)
         const flightResponse = await axios.get("http://localhost:5000/api/flights");
-
-        // Fetch notifications for the specific crew member
         const notificationResponse = await axios.get(`http://localhost:5000/api/notifications/byEmail/${crewEmail}`);
 
-        // Log the notification response for debugging
-        console.log("Notification Response:", notificationResponse.data);
-
-        // Ensure response data is an array before setting state
-        setAssignedFlights(flightResponse.data.slice(0, 3)); // First 3 flights
-        setOtherFlights(flightResponse.data.slice(3)); // Remaining flights for carousel
-        setNotifications(Array.isArray(notificationResponse.data) ? notificationResponse.data : []); // Safe check for notifications
-        setLoading(false); // Stop loading once data is fetched
+        setAssignedFlights(flightResponse.data.slice(0, 3));
+        setOtherFlights(flightResponse.data.slice(3));
+        setNotifications(Array.isArray(notificationResponse.data) ? notificationResponse.data : []);
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching data", err);
-        setLoading(false); // Stop loading on error
-        setNotifications([]); // Set notifications to an empty array if error occurs
+        setLoading(false);
+        setNotifications([]);
       }
     };
 
     fetchData();
   }, [crewEmail]);
 
-  // If the data is loading, show a loading state
   if (loading) {
-    return <div className="text-white text-center p-6">Loading data...</div>;
+    return <div className="text-center p-6">Loading data...</div>;
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <h2 className="text-3xl font-semibold text-center mb-8 text-white">Dashboard</h2>
+    <div className="min-h-screen text-secondary bg-white p-6">
+      <h2 className="text-3xl font-medium text-center mb-8 text-bg-secondary text-gray-800">Dashboard</h2>
 
-      {/* Assigned Flights Section (Top 3 Visible Flights) */}
+      {/* Assigned Flights Section */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
         {assignedFlights.map((flight) => (
           <div
             key={flight.id}
-            className="bg-gray-700 p-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 ease-in-out transform hover:scale-105"
+            className="bg-gray-200 py-6 px-4 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 flex items-center"
           >
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-xl font-semibold text-white">{flight.flightNumber}</h3>
-              <span
-                className={`text-sm px-3 py-1 rounded-full ${
-                  flight.status === "On Time"
-                    ? "bg-green-500 text-white"
-                    : flight.status === "Scheduled"
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-500 text-white"
-                }`}
-              >
-                {flight.status}
-              </span>
+            {/* Flight Logo */}
+            <img
+              src={straightlogo}
+              alt={`${flight.flightNumber} Logo`}
+              className="h-16 w-16 object-contain mr-4"
+            />
+            {/* Flight Details */}
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <h3 className="text-lg font-semibold text-bg-secondary">{flight.flightNumber}</h3>
+                <span
+                  className={`text-sm px-3 py-1 rounded-full ${
+                    flight.status === "Completed"
+                      ? "bg-green-700 text-white"
+                      : flight.status === "In Air"
+                      ? "bg-blue-600 text-white"
+                      : "bg-accent-orange-light text-white"
+                  }`}
+                >
+                  {flight.status}
+                </span>
+              </div>
+              <p className="text-gray-600">{flight.destination}</p>
+              <p className="text-sm text-gray-500">Departure: {flight.departureTime}</p>
             </div>
-            <p className="text-gray-300">{flight.destination}</p>
-            <p className="text-sm text-gray-400">Departure: {flight.departureTime}</p>
           </div>
         ))}
       </div>
 
-      {/* Scrollable Section for Other Flights (Continuous Scroll) */}
+      {/* Other Flights Section with Marquee */}
       {otherFlights.length > 0 && (
-        <div className="overflow-hidden bg-gray-700 p-4 rounded-lg shadow-lg mb-8">
-          <div className="flex animate-scroll space-x-6">
+        <div className="overflow-hidden bg-gray-200 py-6 px-4 rounded-lg shadow-md mb-8 relative">
+          <div className="whitespace-nowrap animate-marquee flex space-x-6">
             {otherFlights.map((flight) => (
               <div
                 key={flight.id}
-                className="bg-gray-800 p-6 rounded-lg shadow-lg transform transition-all duration-300 hover:scale-105"
+                className="bg-gray-300 py-6 px-4 rounded-lg shadow-sm hover:shadow-md transition-all duration-300 flex items-center"
               >
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-xl font-semibold text-white">{flight.flightNumber}</h3>
-                  <span
-                    className={`text-sm px-3 py-1 rounded-full ${
-                      flight.status === "In Air"
-                        ? "bg-green-500 text-white"
-                        : flight.status === "Scheduled"
-                        ? "bg-blue-500 text-white"
-                        : "bg-blue-500 text-white"
-                        
-                    }`}
-                  >
-                    {flight.status}
-                  </span>
+                {/* Flight Logo */}
+                <img
+                  src={logo}
+                  alt={`${flight.flightNumber} Logo`}
+                  className="h-12 w-12 object-contain mr-4"
+                />
+                {/* Flight Details */}
+                <div className="min-w-0">
+                  <div className="flex items-center justify-between mb-2">
+                    <h3 className="text-lg font-medium text-bg-secondary truncate">{flight.flightNumber}</h3>
+                    <span
+                      className={`text-sm px-3 py-1 rounded-full ${
+                        flight.status === "Completed"
+                          ? "bg-green-700 text-white"
+                          : flight.status === "In Air"
+                          ? "bg-blue-600 text-white"
+                          : "bg-accent-orange-light text-white"
+                      }`}
+                    >
+                      {flight.status}
+                    </span>
+                  </div>
+                  <p className="text-gray-600 truncate">{flight.destination}</p>
+                  <p className="text-sm text-gray-500 truncate">Departure: {flight.departureTime}</p>
                 </div>
-                <p className="text-gray-300">{flight.destination}</p>
-                <p className="text-sm text-gray-400">Departure: {flight.departureTime}</p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Notifications Section (Top Notifications Visible) */}
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-medium mb-4 text-white">Recent Notifications</h3>
+      {/* Notifications Section */}
+      <div className="bg-gray-200 py-6 px-4 rounded-lg shadow-md">
+        <h3 className="text-xl font-medium mb-4 text-bg-secondary">Recent Notifications</h3>
         <div className="space-y-4">
           {notifications && notifications.length > 0 ? (
             notifications.map((notification) => (
               <div
                 key={notification.id}
-                className={`p-4 rounded-lg ${
+                className={`p-4 rounded-lg shadow-sm ${
                   notification.type === "critical"
-                    ? "bg-red-600 text-white" // Important notifications
+                    ? "bg-red-100 text-red-600"
                     : notification.type === "warning"
-                    ? "bg-yellow-500 text-white"
+                    ? "bg-yellow-100 text-yellow-600"
                     : notification.type === "info"
-                    ? "bg-blue-500 text-white"
+                    ? "bg-blue-100 text-blue-600"
                     : notification.type === "success"
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-600 text-white"
+                    ? "bg-green-100 text-green-600"
+                    : "bg-gray-100 text-gray-600"
                 }`}
               >
-                <p className="text-white text-sm sm:text-base">{notification.message}</p>
-                <p className="text-xs sm:text-sm text-white mt-2">{notification.timestamp}</p>
+                <p className="text-sm sm:text-base">{notification.message}</p>
+                <p className="text-xs sm:text-sm mt-2">{notification.timestamp}</p>
               </div>
             ))
           ) : (
-            <p className="text-white">No notifications available.</p>
+            <p className="text-gray-600">No notifications available.</p>
           )}
         </div>
       </div>

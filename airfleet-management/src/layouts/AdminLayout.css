@@ -16,6 +16,7 @@
     top: 0;
     left: 0;
     z-index: 10;
+    
     display: flex;
     flex-direction: column;
     padding: 1rem 0;
@@ -26,13 +27,21 @@
     flex: 1;
     height: 100vh;
     overflow-y: auto;
-    padding: 1rem;
+    padding: 0rem;
     box-sizing: border-box;
     background: url('../assets/images/plane.jpg') no-repeat center center fixed;
     background-size: cover; /* Ensure the image covers the full area */
     color: #ffffff; /* Adjust text color for contrast */
   }
+  @media (max-width: 768px) {
+    .admin-sidebar {
+      width: 0px; /* Hide the sidebar on smaller screens */
+    }
   
+    .main-content {
+      margin-left: 0; /* Remove the margin to fill the full width */
+    }
+  }
   .full-screen-container {
     display: flex;
     flex-direction: column;

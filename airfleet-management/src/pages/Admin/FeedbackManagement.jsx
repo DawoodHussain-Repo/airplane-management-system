@@ -1,18 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
+import userimg from "../../assets/images/user.png";
 
 const FeedbackManagement = () => {
   const [feedbacks, setFeedbacks] = useState([]);
-  const [newFeedback, setNewFeedback] = useState({ flightNo: "", rating: 0, comments: "" });
   const [averageRating, setAverageRating] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Fetch all feedbacks when the component mounts
   useEffect(() => {
     fetchFeedbacks();
   }, []);
 
-  // Fetch feedbacks from API
   const fetchFeedbacks = async () => {
     try {
       const response = await fetch("http://localhost:5000/api/feedbacks");
@@ -24,145 +22,87 @@ const FeedbackManagement = () => {
     }
   };
 
-  // Handle feedback submission
-  const handleSubmitFeedback = async () => {
-    if (!newFeedback.flightNo || !newFeedback.comments || newFeedback.rating === 0) {
-      alert("Please fill in all fields before submitting.");
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      const response = await fetch("http://localhost:5000/api/feedbacks", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(newFeedback),
-      });
-      const result = await response.json();
-      if (response.ok) {
-        setFeedbacks((prevFeedbacks) => [...prevFeedbacks, result]);
-        resetForm();
-        calculateAverageRating([...feedbacks, result]);
-      } else {
-        console.error("Error submitting feedback:", result);
-      }
-    } catch (error) {
-      console.error("Error submitting feedback:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  // Calculate average rating
   const calculateAverageRating = (feedbacksList) => {
     const totalRating = feedbacksList.reduce((sum, feedback) => sum + feedback.rating, 0);
     setAverageRating(totalRating / feedbacksList.length);
   };
 
-  const resetForm = () => {
-    setNewFeedback({ flightNo: "", rating: 0, comments: "" });
-  };
+  const totalFeedbacks = feedbacks.length;
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewFeedback({ ...newFeedback, [name]: value });
-  };
+  const getRatingCount = (rating) =>
+    feedbacks.filter((feedback) => feedback.rating === rating).length;
 
-  const handleRatingClick = (rating) => {
-    setNewFeedback({ ...newFeedback, rating });
-  };
-
-  const renderStars = () => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Star
-          key={i}
-          className={`cursor-pointer w-8 h-8 ${i <= newFeedback.rating ? "text-[#f39c12]" : "text-gray-300"}`}
-          onClick={() => handleRatingClick(i)}
-        />
-      );
-    }
-    return stars;
-  };
-
-  // Function to determine background color based on rating
   const getFeedbackColor = (rating) => {
-    if (rating >= 4) return "bg-green-500 text-white"; // Excellent (green)
-    if (rating === 3) return "bg-yellow-500 text-white"; // Average (yellow)
-    return "bg-red-500 text-white"; // Poor (red)
+    if (rating >= 4) return "bg-green-500 text-white";
+    if (rating === 3) return "bg-yellow-500 text-white";
+    return "bg-red-500 text-white";
   };
 
   return (
-    <div className="p-6 bg-gray-00 min-h-screen flex flex-col md:flex-row gap-6 text-white">
-      {/* Feedback Form */}
-      <div className="w-full md:w-1/2 lg:w-2/5 bg-gray-800 p-8 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold mb-4">Submit Your Feedback</h2>
-        <div className="space-y-6">
-          <input
-            type="text"
-            name="flightNo"
-            value={newFeedback.flightNo}
-            onChange={handleInputChange}
-            placeholder="Flight No."
-            className="w-full p-3 border border-gray-700 rounded-md text-lg bg-gray-700 text-white"
-          />
-          <div className="flex items-center mr-1">
-            <span className="text-lg mr-0">Rating:</span>
-            <div className="flex space-x-2">{renderStars()}</div>
-          </div>
-          <textarea
-            name="comments"
-            value={newFeedback.comments}
-            onChange={handleInputChange}
-            placeholder="Write your feedback here..."
-            className="w-full p-3 border border-gray-700 rounded-md text-lg bg-gray-700 text-white"
-          />
-          <button
-            onClick={handleSubmitFeedback}
-            className="w-full bg-yellow-500 text-white p-3 rounded-md hover:bg-yellow-600 transition-colors duration-300 text-lg"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? "Submitting..." : "Submit Feedback"}
-          </button>
-        </div>
+    <div>
+      <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
+        <h1 className="text-xl font-bold">Feedback Management</h1>
       </div>
 
-      {/* Feedback Report Section */}
-      <div className="w-full md:w-2/3 bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-2xl font-semibold mb-4">Feedback Reports</h2>
-        <div className="space-y-4">
-          <div className="text-lg">
-            <strong>Average Rating:</strong> {averageRating.toFixed(2)} / 5
-          </div>
-          <div>
-            <strong>Feedback Breakdown:</strong>
-            <div className="space-y-2">
-              {[1, 2, 3, 4, 5].map((rating) => {
-                const count = feedbacks.filter((feedback) => feedback.rating === rating).length;
-                return (
-                  <div key={rating} className="flex justify-between">
-                    <span>Rating {rating}:</span>
-                    <span>{count} feedback(s)</span>
-                  </div>
-                );
-              })}
+      <div className="p-0 bg-gray-00 min-h-screen flex flex-col gap-6 text-black text-sm">
+        {/* Feedback Report Section */}
+        <div className="w-full bg-white p-6 shadow-lg">
+          <div className="mb-6 p-6 bg-gray-200 rounded-lg md:text-lg flex items-center justify-between">
+            <span>Average Rating:</span>
+            <div className="flex items-center space-x-3">
+              <Star className="text-yellow-500 w-5 h-5" />
+              <span className="text-lg font-bold">{averageRating.toFixed(2)} / 5</span>
             </div>
           </div>
-          <div className="overflow-y-auto max-h-80 mt-6">
-            <h3 className="text-xl font-semibold">Recent Feedbacks</h3>
+
+          {/* Feedback Breakdown */}
+          <div className="space-y-6 md:text-lg bg-gray-200 p-6 rounded-lg">
+            <div>
+              <strong>Feedback Breakdown:</strong>
+              <div className="space-y-4 mt-4">
+                {[1, 2, 3, 4, 5].map((rating) => {
+                  const count = getRatingCount(rating);
+                  const percentage = totalFeedbacks ? (count / totalFeedbacks) * 100 : 0;
+                  return (
+                    <div key={rating} className="space-y-3">
+                      <div className="flex justify-between">
+                        <span>Rating {rating}:</span>
+                        <span>{count} feedback(s)</span>
+                      </div>
+                      <div className="w-full bg-gray-300 rounded-full h-2">
+                        <div
+                          className="bg-yellow-500 h-2 rounded-full"
+                          style={{ width: `${percentage}%` }}
+                        />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Feedbacks */}
+          <div className="overflow-y-auto max-h-80 mt-6 bg-gray-200 p-4 scrollbar-thin scrollbar-thumb-secondary rounded-lg">
+            <h3 className="font-semibold mb-4 md:text-lg">Recent Feedbacks</h3>
             <ul className="space-y-4">
               {feedbacks.map((feedback) => (
                 <li key={feedback._id} className="border-b pb-4">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">{feedback.passengerId.email}</span> {/* Show Passenger's Email */}
-                    <div className="flex items-center">
-                      <Star className="mr-1 text-[#f39c12]" />
-                      {feedback.rating}
+                  <div className="flex items-center space-x-4">
+                    <img
+                      src={userimg}
+                      alt="User"
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div className="flex justify-between w-full items-center p-3">
+                      <span className="font-semibold">{feedback.passengerId.email}</span>
+                      <div className="flex items-center">
+                        <Star className="mr-2 text-yellow-500" />
+                        {feedback.rating}
+                      </div>
                     </div>
                   </div>
-                  <p className={`${getFeedbackColor(feedback.rating)} p-3 rounded-md`}>
+                  <p className={`${getFeedbackColor(feedback.rating)} p-2 rounded-lg`}>
                     {feedback.comments}
                   </p>
                 </li>

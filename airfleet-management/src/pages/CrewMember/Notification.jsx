@@ -53,12 +53,12 @@ const NotificationsAndAlerts = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <h2 className="text-3xl font-semibold text-center mb-6">Notifications and Alerts</h2>
+    <div className="min-h-screen bg-white text-gray-800 p-6">
+      <h2 className="text-3xl font-medium text-center mb-6">Notifications and Alerts</h2>
 
       {/* Display Notifications */}
-      <div className="bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h3 className="text-xl font-semibold mb-4">Important Notifications</h3>
+      <div className="bg-bg-secondary p-6 rounded-lg shadow-lg max-w-4xl mx-auto">
+        <h3 className="text-xl font-semibold text-secondary mb-4">Important Notifications</h3>
         <div className="space-y-4">
           {notifications.length === 0 ? (
             <p className="text-gray-400 text-center">{message || 'No notifications available.'}</p>
@@ -66,10 +66,10 @@ const NotificationsAndAlerts = () => {
             notifications.map((notification) => (
               <div
                 key={notification._id}
-                className={`p-4 rounded-lg ${notification.status === "Read" ? "bg-gray-700" : "bg-gray-600"} hover:bg-gray-500`}
+                className={`p-4 rounded-lg ${notification.status === "Read" ? "bg-gray-700" : "bg-gray-700"} hover:bg-gray-700 border border-black`}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <p className="text-lg flex-1">{notification.message}</p>
+                  <p className="text-lg flex-1 text-white">{notification.message}</p>
                   {notification.status !== "Read" && (
                     <button
                       onClick={() => markAsRead(notification)}
