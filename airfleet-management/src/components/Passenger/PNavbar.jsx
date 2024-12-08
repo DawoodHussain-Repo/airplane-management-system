@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { FaBars, FaTimes, FaUserAlt, FaBell, FaTicketAlt } from "react-icons/fa";
+import { FaBars, FaTimes, FaUserAlt } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 import AirFleet from "../../assets/images/AirFleet.png"; // Logo Image
 
@@ -27,7 +27,6 @@ const PassengerNavbar = () => {
           {[
             { label: "Dashboard", path: "/passenger/dashboard" },
             { label: "Booking", path: "/passenger/booking" },
-            { label: "Seats", path: "/passenger/seat-selection" },
             { label: "Flight Information", path: "/passenger/flight-info" },
             { label: "History", path: "/passenger/history" },
             { label: "Airport", path: "/passenger/airport" },
@@ -51,7 +50,7 @@ const PassengerNavbar = () => {
               className="nav-link text-black py-2 px-4 flex items-center transition-all duration-300 ease-in-out hover:text-secondary"
               activeClassName="text-secondary underline"
             >
-              <FaTicketAlt className="mr-2" />
+          
               Loyalty
             </NavLink>
           </li>
@@ -62,11 +61,7 @@ const PassengerNavbar = () => {
               <FaUserAlt size={24} className="text-secondary" />
             </NavLink>
           </li>
-          <li>
-            <NavLink to="/passenger/notifications">
-              <FaBell size={24} className="text-secondary" />
-            </NavLink>
-          </li>
+        
 
           {/* CTA Button */}
           <li>
@@ -135,7 +130,7 @@ const PassengerNavbar = () => {
             onClick={() => setMenuOpen(false)}
             activeClassName="text-secondary underline"
           >
-            <FaTicketAlt className="mr-2" />
+          
             Loyalty
           </NavLink>
 

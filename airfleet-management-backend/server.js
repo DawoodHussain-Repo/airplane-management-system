@@ -13,6 +13,8 @@ const withdrawalRoutes = require('./routes/withdrawRoutes');
 const bookingRoutes = require('./routes/bookingRoutes');  // Import the new booking routes
 const passengerRoutes = require('./routes/updateProfile');
 const airportRoutes = require('./routes/airportRoutes');
+const stripeRoutes = require("./routes/stripeRoutes");
+
 const app = express();
 
 // Connect to MongoDB
@@ -40,6 +42,8 @@ app.use('/api/bookings', bookingRoutes); // Use the booking routes
 app.use('/api/passengers', passengerRoutes);
 // Routes
 app.use('/api/airport', airportRoutes);
+app.use("/api/stripe", stripeRoutes);
+
 // Start the server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
