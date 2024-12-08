@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import AirplaneIcon from "../../assets/images/airplane.png";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { FaHome } from "react-icons/fa";
 
 const CrewManagement = () => {
   const [crewMembers, setCrewMembers] = useState([]); // State for crew members
@@ -10,7 +8,7 @@ const CrewManagement = () => {
   const [assignedCrew, setAssignedCrew] = useState([]); // State for assigned crew
   const [selectedCrew, setSelectedCrew] = useState(""); // Selected crew
   const [selectedFlight, setSelectedFlight] = useState(""); // Selected flight
-
+  const [message, setMessage] = useState(""); // Message for status updates
   // Fetch data from the backend API on page load
   useEffect(() => {
     fetchCrewMembers();
@@ -25,7 +23,7 @@ const CrewManagement = () => {
       .then((response) => setCrewMembers(response.data))
       .catch((error) => {
         console.error("Error fetching crew members:", error);
-        toast.error("Error fetching crew members.");
+        setMessage("Error fetching crew members.");
       });
   };
 
@@ -36,7 +34,7 @@ const CrewManagement = () => {
       .then((response) => setFlights(response.data))
       .catch((error) => {
         console.error("Error fetching flights:", error);
-        toast.error("Error fetching flights.");
+        setMessage("Error fetching flights.");
       });
   };
 
@@ -47,13 +45,14 @@ const CrewManagement = () => {
       .then((response) => setAssignedCrew(response.data))
       .catch((error) => {
         console.error("Error fetching assigned crew:", error);
-        toast.error("Error fetching assigned crew.");
+        setMessage("Error fetching assigned crew.");
       });
   };
 
   // Handle assigning crew to a flight
   const handleAssignCrew = () => {
     if (selectedCrew && selectedFlight) {
+      // Optimistic UI update before backend call
       const newAssignment = {
         crewMemberId: selectedCrew,
         flightId: selectedFlight,
@@ -63,7 +62,7 @@ const CrewManagement = () => {
         ...prevAssignedCrew,
         {
           ...newAssignment,
-          crewMemberId: { firstName: "Crew", lastName: "Member" }, // Placeholder
+          crewMemberId: { firstName: "Crew", lastName: "Member" }, // Placeholder until backend populates
           flightId: { flightNumber: "Flight No.", destination: "Destination" }, // Placeholder
         },
       ]);
@@ -71,20 +70,21 @@ const CrewManagement = () => {
       axios
         .post("http://localhost:5000/api/crew/assign", newAssignment)
         .then((response) => {
-          toast.success("Crew member assigned successfully.");
+          setMessage("Crew member assigned successfully.");
           fetchAssignedCrew(); // Re-fetch assigned crew after successful assignment
         })
         .catch((error) => {
-          toast.error("Error assigning crew member.");
+          setMessage("Error assigning crew member.");
           console.error("Error:", error);
         });
     } else {
-      toast.error("Please select both crew member and flight.");
+      setMessage("Please select both crew member and flight.");
     }
   };
 
   // Handle removing crew from a flight
   const handleRemoveCrew = (crewId, flightId) => {
+    // Optimistic UI update before backend call
     setAssignedCrew((prevAssignedCrew) =>
       prevAssignedCrew.filter(
         (assignment) =>
@@ -97,34 +97,37 @@ const CrewManagement = () => {
         data: { crewMemberId: crewId, flightId },
       })
       .then(() => {
-        toast.success("Crew member removed successfully.");
+        setMessage("Crew member removed successfully.");
         fetchAssignedCrew(); // Re-fetch assigned crew after successful removal
       })
       .catch((error) => {
-        toast.error("Error removing crew member.");
+        setMessage("Error removing crew member.");
         console.error("Error:", error);
       });
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white to-white text-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-700 text-white">
       {/* Header */}
-      <div className="flex flex-col items-center text-center justify-center md:flex-row md:justify-between px-6 py-4 bg-secondary">
-  <h1 className="text-xl font-bold text-white">Crew Management</h1>
-</div>
-
+      <div className="flex items-center justify-between px-6 py-4 bg-gray-800">
+        <h1 className="text-xl font-bold">Airline Management</h1>
+        <button className="flex items-center gap-2 px-4 py-2 bg-yellow-500 rounded-lg hover:bg-yellow-600 transition">
+          <FaHome />
+          Home
+        </button>
+      </div>
 
       {/* Main Content */}
       <div className="p-6 space-y-8">
         {/* Assign Crew Form */}
-        <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Assign Crew</h2>
+        <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-semibold mb-4">Assign Crew</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Crew Member Select */}
             <select
               value={selectedCrew}
               onChange={(e) => setSelectedCrew(e.target.value)}
-              className="p-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-accent-yellow"
+              className="p-3 rounded-lg bg-gray-900 border border-gray-600 focus:ring-2 focus:ring-yellow-400"
             >
               <option value="">Select Crew Member</option>
               {crewMembers.length === 0 ? (
@@ -142,7 +145,7 @@ const CrewManagement = () => {
             <select
               value={selectedFlight}
               onChange={(e) => setSelectedFlight(e.target.value)}
-              className="p-3 rounded-lg bg-gray-100 border border-gray-300 focus:ring-2 focus:ring-accent-yellow"
+              className="p-3 rounded-lg bg-gray-900 border border-gray-600 focus:ring-2 focus:ring-yellow-400"
             >
               <option value="">Select Flight</option>
               {flights.map((flight) => (
@@ -156,30 +159,27 @@ const CrewManagement = () => {
           {/* Assign Crew Button */}
           <button
             onClick={handleAssignCrew}
-            className="mt-4 w-full bg-accent-orange-light py-2 rounded-lg font-semibold hover:bg-gray-800  transition text-white"
+            className="mt-4 w-full bg-yellow-500 py-2 rounded-lg font-semibold hover:bg-yellow-600 transition"
           >
             Assign Crew
           </button>
         </div>
 
         {/* Assigned Crew List */}
-        <div className="bg-white p-6 rounded-xl shadow-lg">
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800">Assigned Crew</h2>
-          <div className="space-y-4 max-h-64 overflow-y-auto scrollbar-thin scrollbar-thumb-secondary scrollbar-track-gray-200">
+        <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg">
+          <h2 className="text-2xl font-semibold mb-4">Assigned Crew</h2>
+          <div className="space-y-4 max-h-64 overflow-y-auto">
             {assignedCrew.length === 0 ? (
               <p>No crew assigned yet.</p>
             ) : (
               assignedCrew.map((assignment) => (
-                <div key={assignment._id} className="flex justify-between p-3 bg-gray-100 rounded-lg shadow text-sm">
-                  <div className="flex items-center space-x-4 cursor-pointer">
-                    <img src={AirplaneIcon} alt="Flight Logo" className="w-8 h-8" />
-                    <p>
-                      Crew: {assignment.crewMemberId.firstName} {assignment.crewMemberId.lastName}, Flight: {assignment.flightId.flightNumber}
-                    </p>
-                  </div>
+                <div key={assignment._id} className="flex justify-between p-3 bg-gray-900 rounded-lg shadow text-sm">
+                  <p>
+                    Crew: {assignment.crewMemberId.firstName} {assignment.crewMemberId.lastName}, Flight: {assignment.flightId.flightNumber}
+                  </p>
                   <button
                     onClick={() => handleRemoveCrew(assignment.crewMemberId._id, assignment.flightId._id)}
-                    className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                    className="px-4 py-1 bg-red-500 rounded hover:bg-red-600 transition"
                   >
                     Remove
                   </button>
@@ -188,10 +188,10 @@ const CrewManagement = () => {
             )}
           </div>
         </div>
-      </div>
 
-      {/* Toast Container */}
-      <ToastContainer />
+        {/* Feedback or Status Message */}
+        {message && <div className="bg-gray-900 p-4 mt-4 rounded text-center">{message}</div>}
+      </div>
     </div>
   );
 };

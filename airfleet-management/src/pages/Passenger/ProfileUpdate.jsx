@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 const ProfileUpdate = () => {
   const [formData, setFormData] = useState({
@@ -10,8 +11,41 @@ const ProfileUpdate = () => {
     seatPreference: "",
     mealPreference: "",
   });
-
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true); // Loading state for data fetching
+
+  useEffect(() => {
+    // Get userId from localStorage
+    const userId = localStorage.getItem("PassID");
+    if (userId) {
+      // Fetch user data from the backend
+      axios
+        .get(`http://localhost:5000/api/passengers/profile/${userId}`)
+        .then((response) => {
+          const userData = response.data.user;
+          
+          // Check if travelPreferences exists and has values
+          const seatPreference = userData.travelPreferences && userData.travelPreferences[0] ? userData.travelPreferences[0] : "";
+          const mealPreference = userData.travelPreferences && userData.travelPreferences[1] ? userData.travelPreferences[1] : "";
+  
+          setFormData({
+            fullName: `${userData.firstName} ${userData.lastName}`,
+            email: userData.email,
+            phone: userData.contactDetails ? userData.contactDetails.phone : "",
+            emergencyContactName: userData.contactDetails ? userData.contactDetails.emergencyContact : "",
+            emergencyContactPhone: userData.contactDetails ? userData.contactDetails.emergencyContact : "",
+            seatPreference: seatPreference,
+            mealPreference: mealPreference,
+          });
+          setLoading(false); // Stop loading once data is fetched
+        })
+        .catch((error) => {
+          console.error("Error fetching profile data", error);
+          setLoading(false); // Stop loading in case of error
+        });
+    }
+  }, []);
+  
 
   // Handle form input change
   const handleChange = (e) => {
@@ -26,8 +60,32 @@ const ProfileUpdate = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Add validation logic here if necessary
-    setMessage("Profile updated successfully!");
+
+    // Update the profile using PUT request
+    const userId = localStorage.getItem("PassID");
+    axios
+      .put(`http://localhost:5000/api/passengers/update/${userId}`, {
+        firstName: formData.fullName.split(" ")[0], // Extract first name from full name
+        lastName: formData.fullName.split(" ")[1], // Extract last name from full name
+        email: formData.email,
+        contactDetails: {
+          phone: formData.phone,
+          emergencyContact: formData.emergencyContactPhone, // Assuming this is the emergency contact phone
+        },
+        travelPreferences: [formData.seatPreference, formData.mealPreference], // Assuming two preferences
+      })
+      .then((response) => {
+        setMessage("Profile updated successfully!");
+      })
+      .catch((error) => {
+        console.error("Error updating profile", error);
+        setMessage("Failed to update profile.");
+      });
   };
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state while data is being fetched
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">

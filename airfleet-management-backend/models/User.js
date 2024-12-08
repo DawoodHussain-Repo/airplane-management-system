@@ -27,5 +27,21 @@ userSchema.pre('save', async function (next) {
   this.passwordHash = await bcrypt.hash(this.passwordHash, 10);
   next();
 });
+// Method to update loyalty points
+userSchema.methods.updateLoyaltyPoints = function (points) {
+  this.loyaltyPoints += points;
+  this.updatedAt = Date.now();
+  return this.save();
+};
+
+// Method to redeem loyalty points
+userSchema.methods.redeemPoints = function (points) {
+  if (this.loyaltyPoints < points) {
+    throw new Error("Insufficient loyalty points.");
+  }
+  this.loyaltyPoints -= points;
+  this.updatedAt = Date.now();
+  return this.save();
+};
 
 module.exports = mongoose.model('User', userSchema);
