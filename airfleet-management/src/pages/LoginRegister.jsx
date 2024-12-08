@@ -143,6 +143,15 @@ const LoginRegister = () => {
                 className="w-full p-2 md:p-3  border border-gray-300 rounded-md text-black bg-white placeholder-gray-500 outline-none focus:ring-2 focus:ring-gray-800 transition-all duration-300 ease-in-out hover:shadow-md"
                 required
               />
+              
+              {/* Forgot Password Link */}
+              <a
+                href="/forgot-password"
+                className="text-secondary text-sm mt-2 hover:underline transition-all duration-300 ease-in-out"
+              >
+                Forgot Password?
+              </a>
+              
               <button
                 type="submit"
                 className="w-full py-3 bg-secondary text-white font-bold rounded-full hover:bg-gray-800 transition-all duration-300 ease-in-out transform hover:scale-[1.02] active:scale-95"

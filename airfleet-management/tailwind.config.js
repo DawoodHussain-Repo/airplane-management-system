@@ -34,8 +34,7 @@ export default {
         },
       },
       animation: {
-        scroll: "scroll 15s linear infinite",// Applying scroll animation
-        'slide-in': 'slideIn 1s ease-out forwards',
+        scroll: "scroll 15s linear infinite", // Applying scroll animation
       },
       keyframes: {
         scroll: {
@@ -44,10 +43,6 @@ export default {
           },
           "100%": {
             transform: "translateX(-100%)", // End at the left side of the screen
-          },
-          slideIn: {
-            '0%': { transform: 'translateX(-100%)' },
-            '100%': { transform: 'translateX(0)' },
           },
         },
       },

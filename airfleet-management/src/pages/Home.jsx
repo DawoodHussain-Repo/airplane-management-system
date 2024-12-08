@@ -1,8 +1,12 @@
-import LoginRegister from '../pages/LoginRegister';
+import Navbar from '../components/Navbar';
+import LandingPage from './Landing';
 
 const Home = () => {
   return (
-        <LoginRegister />    
+        <>
+        <Navbar />
+        <LandingPage />
+        </>
   );
 };
 

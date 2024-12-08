@@ -15,6 +15,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import AdminLayout from './layouts/AdminLayout';
 import CrewLayout from './layouts/CrewMember';
 import PassengerLayout from './layouts/PassengerLayout';
+import ForgotPassword from './pages/ForgotPassword';
 
 const App = () => {
   return (
@@ -27,7 +28,8 @@ const App = () => {
         <Route path="/about-us" element={<Aboutus />} />
         <Route path="/contact-us" element={<Contactus />} />
         <Route path="/flight-schedule" element={<ViewFlight/>} />
-
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        
         <Route element={<AdminLayout />}>
         <Route
           path="/admin/dashboard"

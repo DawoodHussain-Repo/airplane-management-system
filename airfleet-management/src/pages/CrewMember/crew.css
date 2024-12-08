@@ -12,4 +12,19 @@
       transform: translateX(-100%);
     }
   }
+
+  
+  @keyframes marquee-reverse {
+    0% {
+      transform: translateX(-180%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+  
+
+  .animate-marquee-reverse {
+    animation: marquee-reverse 35s linear infinite;
+  }
   

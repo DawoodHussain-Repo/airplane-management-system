@@ -66,10 +66,10 @@ const NotificationsAndAlerts = () => {
             notifications.map((notification) => (
               <div
                 key={notification._id}
-                className={`p-4 rounded-lg ${notification.status === "Read" ? "bg-gray-700" : "bg-gray-700"} hover:bg-gray-700 border border-black`}
+                className={`p-4 rounded-lg ${notification.status === "Read" ? "bg-gray-700" : "bg-gray-600"} hover:bg-gray-500 border border-black`}
               >
                 <div className="flex justify-between items-center mb-2">
-                  <p className="text-lg flex-1 text-white">{notification.message}</p>
+                  <p className="text-lg text-white flex-1">{notification.message}</p>
                   {notification.status !== "Read" && (
                     <button
                       onClick={() => markAsRead(notification)}
