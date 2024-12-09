@@ -20,7 +20,7 @@ const UserManagement = () => {
   const [editUserId, setEditUserId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const API_BASE_URL = "http://localhost:5000/api/users"; // Update as needed
+  const API_BASE_URL = "https://airplane-management-system-chi.vercel.app/api/users"; // Update as needed
 
   // Fetch all users from the backend
   useEffect(() => {
