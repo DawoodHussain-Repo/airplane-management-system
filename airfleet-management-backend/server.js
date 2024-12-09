@@ -25,14 +25,22 @@ connectDB().then(() => {
   process.exit(1); // Exit the process if the DB connection fails
 });
 
-// Middleware
+const allowedOrigins = ['http://localhost:5173', 'https://your-frontend-url.com']; // Add other allowed origins here
 app.use(cors({
-  origin: 'http://localhost:5173', // Allow requests only from this origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Allow specific methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow specific headers
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+
 app.use(express.json()); // Middleware to parse JSON bodies
+app.options('*', cors()); // Handles preflight requests for all routes
 
 // Routes
 app.use('/api/users', userRoutes);  // Use the user routes for all /api/users endpoints
