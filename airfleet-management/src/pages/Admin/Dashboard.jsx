@@ -24,7 +24,7 @@ const Dashboard = () => {
           return;
         }
 
-        const response = await fetch('http://localhost:5000/api/admin/dashboard', {
+        const response = await fetch('https://airplane-management-system-chi.vercel.app/api/admin/dashboard', {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json',
