@@ -26,12 +26,10 @@ connectDB().then(() => {
 });
 
 app.use(cors({
-  origin:["https://localhost:5173"],
+  origin: '*',  // Allow all origins (not recommended for production)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
- credentials: true
-  },
-));
-
+  credentials: true
+}));
 
 app.use(express.json()); // Middleware to parse JSON bodies
 
