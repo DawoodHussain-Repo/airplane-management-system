@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/flights/");
+        const response = await axios.get("https://airplane-management-system-chi.vercel.app/api/flights/");
         setFlights(response.data);
       } catch (error) {
         console.error("Error fetching flights:", error);
