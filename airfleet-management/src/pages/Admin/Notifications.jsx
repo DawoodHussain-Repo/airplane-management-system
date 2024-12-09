@@ -13,8 +13,8 @@ const NotificationManagement = () => {
   const [users, setUsers] = useState([]);
   const [selectedUserId, setSelectedUserId] = useState("");
 
-  const apiUrl = "http://localhost:5000/api/notifications";
-  const usersApiUrl = "http://localhost:5000/api/users";
+  const apiUrl = "https://airplane-management-system-chi.vercel.app/api/notifications";
+  const usersApiUrl = "https://airplane-management-system-chi.vercel.app/api/users";
 
   useEffect(() => {
     const fetchUsers = async () => {
