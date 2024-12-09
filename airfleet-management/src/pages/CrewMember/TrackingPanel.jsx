@@ -15,7 +15,7 @@ const TrackingPanel = () => {
     const fetchFlights = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("http://localhost:5000/api/flights/");
+        const response = await axios.get("https://airplane-management-system-chi.vercel.app/api/flights/");
         setAssignedFlights(response.data);
         setLoading(false);
       } catch (err) {
@@ -37,11 +37,11 @@ const TrackingPanel = () => {
       setPaymentRecords([]);
 
       // Fetch flight details
-      const flightResponse = await axios.get(`http://localhost:5000/api/flights/${flightId}`);
+      const flightResponse = await axios.get(`https://airplane-management-system-chi.vercel.app/api/flights/${flightId}`);
       setSelectedFlight(flightResponse.data);
 
       // Fetch payment records
-      const paymentResponse = await axios.get(`http://localhost:5000/api/flights/${flightId}/payments`);
+      const paymentResponse = await axios.get(`https://airplane-management-system-chi.vercel.app/api/flights/${flightId}/payments`);
       setPaymentRecords(paymentResponse.data);
 
       setLoading(false);
