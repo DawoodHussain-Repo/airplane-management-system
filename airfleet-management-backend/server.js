@@ -10,7 +10,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const withdrawalRoutes = require('./routes/withdrawRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');  // Import the new booking routes
+const bookingRoutes = require('./routes/bookingRoutes');
 const passengerRoutes = require('./routes/updateProfile');
 const airportRoutes = require('./routes/airportRoutes');
 const stripeRoutes = require("./routes/stripeRoutes");
@@ -25,13 +25,18 @@ connectDB().then(() => {
   process.exit(1); // Exit the process if the DB connection fails
 });
 
+// Enable CORS for all origins temporarily (use specific origins for production)
 app.use(cors({
-  origin: '*',  // Allow all origins (not recommended for production)
+  origin: '*',  // Allow all origins for now (can restrict to specific domains in production)
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
 
-app.use(express.json()); // Middleware to parse JSON bodies
+// Explicitly handle preflight OPTIONS requests to ensure CORS headers are applied
+app.options('*', cors());
+
+// Middleware to parse JSON bodies
+app.use(express.json());
 
 // Routes
 app.use('/api/users', userRoutes);  // Use the user routes for all /api/users endpoints
@@ -44,7 +49,6 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/withdrawals", withdrawalRoutes);
 app.use('/api/bookings', bookingRoutes); // Use the booking routes
 app.use('/api/passengers', passengerRoutes);
-// Routes
 app.use('/api/airport', airportRoutes);
 app.use("/api/stripe", stripeRoutes);
 
