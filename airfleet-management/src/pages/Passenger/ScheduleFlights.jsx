@@ -9,7 +9,7 @@ const ScheduledFlights = () => {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/flights/");
+        const response = await fetch("https://airplane-management-system-chi.vercel.app/api/flights/");
         if (!response.ok) {
           throw new Error("Failed to fetch flights");
         }
