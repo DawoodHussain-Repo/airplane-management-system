@@ -10,7 +10,7 @@ const notificationRoutes = require('./routes/notificationRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const withdrawalRoutes = require('./routes/withdrawRoutes');
-const bookingRoutes = require('./routes/bookingRoutes');
+const bookingRoutes = require('./routes/bookingRoutes');  // Import the new booking routes
 const passengerRoutes = require('./routes/updateProfile');
 const airportRoutes = require('./routes/airportRoutes');
 const stripeRoutes = require("./routes/stripeRoutes");
@@ -24,20 +24,10 @@ connectDB().then(() => {
   console.error('Failed to connect to MongoDB:', error);
   process.exit(1); // Exit the process if the DB connection fails
 });
-// Explicitly handle OPTIONS preflight requests
-app.options('*', cors()); // Handle preflight requests for all routes
 
-// Enable CORS for all origins temporarily (use specific origins for production)
-app.use(cors({
-  origin: '*',  // Allow all origins for now (can restrict to specific domains in production)
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  credentials: true
-}));
-
-
-
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Middleware
+app.use(cors());
+app.use(express.json()); // Middleware to parse JSON bodies
 
 // Routes
 app.use('/api/users', userRoutes);  // Use the user routes for all /api/users endpoints
@@ -50,6 +40,7 @@ app.use('/api/admin', adminRoutes);
 app.use("/api/withdrawals", withdrawalRoutes);
 app.use('/api/bookings', bookingRoutes); // Use the booking routes
 app.use('/api/passengers', passengerRoutes);
+// Routes
 app.use('/api/airport', airportRoutes);
 app.use("/api/stripe", stripeRoutes);
 
