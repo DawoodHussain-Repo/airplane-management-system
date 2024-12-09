@@ -14,7 +14,7 @@ const TrackingPanel = () => {
   useEffect(() => {
     const fetchFlights = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/flights"); // Replace with your actual endpoint
+        const response = await axios.get("https://airplane-management-system-chi.vercel.app/api/flights"); // Replace with your actual endpoint
         setFlights(response.data);
       } catch (err) {
         console.error("Error fetching flights:", err);
@@ -27,7 +27,7 @@ const TrackingPanel = () => {
   // Fetch tracking data for a selected flight
   const fetchTrackingData = async (flightId) => {
     try {
-      const response = await axios.put(`http://localhost:5000/api/flights/${flightId}`);
+      const response = await axios.put(`https://airplane-management-system-chi.vercel.app/api/flights/${flightId}`);
       if (response.data) {
         setTrackingData(response.data);
         setSelectedFlight(response.data);
