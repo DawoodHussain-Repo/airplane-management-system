@@ -34,7 +34,6 @@ app.use(cors({
 
 
 app.use(express.json()); // Middleware to parse JSON bodies
-app.options('*', cors()); // Handles preflight requests for all routes
 
 // Routes
 app.use('/api/users', userRoutes);  // Use the user routes for all /api/users endpoints
