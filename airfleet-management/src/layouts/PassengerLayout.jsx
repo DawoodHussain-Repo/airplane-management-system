@@ -1,7 +1,6 @@
 import React from "react";
 import PassengerNavbar from "../components/Passenger/PNavbar"; // Including the navbar
 import { Outlet } from "react-router-dom"; // Used for nested routes
-import planeImage from "../assets/images/plane.jpg";
 
 const PassengerLayout = () => {
   return (
@@ -11,14 +10,7 @@ const PassengerLayout = () => {
 
       {/* Main Content Area */}
       <div
-        className="flex-1 p-6 flex justify-center items-center w-full z-10"
-        style={{
-          backgroundColor: "#fdfd96", // Yellowish fallback
-          backgroundImage: `url(${planeImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-          backgroundRepeat: "no-repeat",
-        }}
+        className=""
       >
         <Outlet />
       </div>

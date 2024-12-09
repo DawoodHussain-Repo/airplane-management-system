@@ -88,9 +88,10 @@ const ProfileUpdate = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <div className="max-w-4xl mx-auto bg-gray-800 p-8 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-6">Update Your Profile</h2>
+    <div className="min-h-screen bg-white text-black p-6">
+        <h2 className="text-3xl font-semibold text-center mb-6">Update Your Profile</h2>
+      
+      <div className="max-w-4xl mx-auto bg-white border-black border-2 p-8 rounded-lg shadow-lg">
         
         {message && (
           <div className="mb-6 text-green-500 font-semibold">
@@ -109,7 +110,7 @@ const ProfileUpdate = () => {
                 value={formData.fullName}
                 onChange={handleChange}
                 placeholder="Full Name"
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="email"
@@ -117,7 +118,7 @@ const ProfileUpdate = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Email Address"
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -125,7 +126,7 @@ const ProfileUpdate = () => {
                 value={formData.phone}
                 onChange={handleChange}
                 placeholder="Phone Number"
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               />
             </div>
           </div>
@@ -140,7 +141,7 @@ const ProfileUpdate = () => {
                 value={formData.emergencyContactName}
                 onChange={handleChange}
                 placeholder="Emergency Contact Name"
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               />
               <input
                 type="text"
@@ -148,7 +149,7 @@ const ProfileUpdate = () => {
                 value={formData.emergencyContactPhone}
                 onChange={handleChange}
                 placeholder="Emergency Contact Phone"
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               />
             </div>
           </div>
@@ -161,7 +162,7 @@ const ProfileUpdate = () => {
                 name="seatPreference"
                 value={formData.seatPreference}
                 onChange={handleChange}
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               >
                 <option value="">Select Seat Preference</option>
                 <option value="Window">Window</option>
@@ -172,7 +173,7 @@ const ProfileUpdate = () => {
                 name="mealPreference"
                 value={formData.mealPreference}
                 onChange={handleChange}
-                className="w-full p-4 rounded-lg bg-gray-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                className="w-full p-4 rounded-lg bg-gray-200 text-black placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-secondary"
               >
                 <option value="">Select Meal Preference</option>
                 <option value="Vegetarian">Vegetarian</option>
@@ -187,7 +188,7 @@ const ProfileUpdate = () => {
           <div className="text-center mt-6">
             <button
               type="submit"
-              className="bg-yellow-500 py-3 px-6 rounded-lg text-white hover:bg-yellow-600 font-semibold w-full"
+              className="bg-secondary hover:bg-gray-800 py-3 px-6 rounded-lg text-white  font-semibold w-full"
             >
               Update Profile
             </button>

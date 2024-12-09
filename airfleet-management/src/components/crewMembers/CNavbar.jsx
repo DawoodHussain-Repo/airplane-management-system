@@ -46,12 +46,12 @@ const CrewNavbar = () => {
           {/* User and Notifications Icons */}
           <li className="relative">
             <NavLink to="/crew/profile">
-              <FaUserAlt size={24} className="text-secondary" />
+              <FaUserAlt size={24} className="text-secondary hover:text-gray-800" />
             </NavLink>
           </li>
           <li className="relative">
             <NavLink to="/crew/notifications">
-              <FaBell size={24} className="text-secondary" />
+              <FaBell size={24} className="text-secondary hover:text-gray-800" />
             </NavLink>
           </li>
 

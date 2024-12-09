@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Swal from "sweetalert2"; // Import SweetAlert2
+import seaticon from "../../assets/images/chair.png"; // Import the seat icon
 
 const SeatSelection = () => {
   const [flightData, setFlightData] = useState(null);
@@ -115,67 +116,92 @@ const SeatSelection = () => {
   }
 
   return (
-    <div className="flex min-h-[500px] bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      {/* Seat Selection Section */}
-      <div className="w-2/3 max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-4">Select Your Seat</h2>
-        <div
-          className="grid grid-cols-6 gap-2 mb-6 overflow-y-auto max-h-[400px] p-2 bg-gray-700 rounded-lg"
-          style={{ scrollbarWidth: "thin", scrollbarColor: "#4B5563 #1F2937" }}
-        >
-          {seatLayout.map((seat, index) => (
-            <button
-              key={index}
-              className={`p-2 rounded-lg font-semibold text-sm ${
-                seat.isAvailable
-                  ? selectedSeats.some((s) => s.row === seat.row && s.seat === seat.seat)
-                    ? "bg-yellow-500" // Yellow for selected seats
-                    : "bg-gray-700 hover:bg-gray-600" // Default available seat color
-                  : "bg-red-500 cursor-not-allowed" // Red for unavailable (booked) seats
-              }`}
-              onClick={() => handleSelectSeat(seat)}
-              disabled={!seat.isAvailable}
-            >
-              {seat.row}
-              {seat.seat}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div className="bg-gray-200 text-black">
+      <h2 className="md:text-3xl text-lg font-bold text-center text-black mb-4">Select Your Seat</h2>
+      <div className="max-w-7xl mx-auto bg-white p-6 rounded-lg shadow-lg border-4 border-black mt-6 mb-6">
+        {/* Seat Selection Section and Payment Section in Flex */}
+        <div className="flex flex-wrap lg:flex-nowrap gap-6">
+          {/* Seat Selection Section */}
+          <div className="lg:w-2/3 sm:w-full bg-gray-200 p-6 rounded-lg shadow-lg mb-6 border-2 border-black">
+          <div
+  className="grid grid-cols-6 sm:grid-cols-3 md:grid-cols-4 gap-2 mb-6 overflow-y-auto max-h-[500px] p-2 bg-gray-300 rounded-lg scrollbar scrollbar-thin scrollbar-thumb-secondary scrollbar-track-gray-200"
+>
+  {seatLayout.map((seat, index) => (
+    <button
+      key={index}
+      className={`p-2 rounded-lg font-semibold text-sm ${seat.isAvailable
+        ? selectedSeats.some((s) => s.row === seat.row && s.seat === seat.seat)
+          ? "bg-accent-yellow text-white" // Yellow for selected seats
+          : "bg-gray-100 hover:bg-accent-yellow hover:text-white" // Default available seat color
+        : "bg-red-500 cursor-not-allowed" // Red for unavailable (booked) seats
+        }`}
+      onClick={() => handleSelectSeat(seat)}
+      disabled={!seat.isAvailable}
+    >
+      {seat.row}
+      {seat.seat}
+    </button>
+  ))}
+</div>
 
-      {/* Payment Section */}
-      <div className="w-1/3 ml-4 bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h3 className="text-2xl font-bold mb-4">Payment Details</h3>
-        <div className="text-lg mb-4">
-          <p>
-            <strong>Flight Number:</strong> {flightData.flightNumber}
-          </p>
-          <p>
-            <strong>Destination:</strong> {flightData.destination}
-          </p>
-          <p>
-            <strong>Price per Seat:</strong> ${flightData.price}
-          </p>
-        </div>
-        {selectedSeats.length > 0 && (
-          <div className="text-lg bg-gray-700 p-4 rounded-lg mb-4">
-            <p>
-              <strong>Selected Seats:</strong>{" "}
-              {selectedSeats.map((seat) => `${seat.row}${seat.seat}`).join(", ")}
-            </p>
-            <p>
-              <strong>Total Price:</strong> ${amountPaid}
-            </p>
           </div>
-        )}
-        <button
-          onClick={handleConfirmBooking}
-          className="bg-green-500 py-3 px-6 w-full rounded-lg text-white hover:bg-green-600 font-semibold"
-        >
-          Confirm Booking
-        </button>
+
+          {/* Payment Section */}
+          <div className="lg:w-1/3 w-full bg-gray-200 p-6 rounded-lg shadow-lg border-2 border-black">
+            <h3 className="text-2xl font-bold mb-4">Payment Details</h3>
+            <div className="text-lg mb-4">
+              <p>
+                <strong>Flight Number:</strong> {flightData.flightNumber}
+              </p>
+              <p>
+                <strong>Destination:</strong> {flightData.destination}
+              </p>
+              <p>
+                <strong>Price per Seat:</strong> ${flightData.price}
+              </p>
+            </div>
+
+            {/* Display each selected seat */}
+            {selectedSeats.length > 0 && (
+              <div className="bg-gray-300 p-4 rounded-lg mb-4">
+                <h4 className="text-lg font-semibold mb-2">Selected Seats</h4>
+                {selectedSeats.map((seat, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center justify-between bg-white p-4 rounded-lg shadow-lg mb-2"
+                  >
+                    <div className="flex items-center">
+                      {/* Seat Icon (use any icon or image for this) */}
+                      <img src={seaticon} alt="Seat Icon" className="w-8 h-8 mr-4" />
+                      <span className="font-semibold text-lg">
+                        {seat.row}{seat.seat}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-semibold text-lg">${flightData.price}</p>
+                    </div>
+                  </div>
+                ))}
+                {/* Total Payment */}
+                <div className="border-t-2 border-gray-400 pt-4 mt-4">
+                  <p className="font-semibold text-xl">
+                    <strong>Total Payment: </strong>${amountPaid}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <button
+              onClick={handleConfirmBooking}
+              className="bg-green-500 py-3 px-6 w-full rounded-full text-white hover:bg-gray-800 font-semibold"
+            >
+              Confirm Booking
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
 };
+
 export default SeatSelection;

@@ -39,7 +39,7 @@ exports.loginUser = async (req, res) => {
     if (!isPasswordValid) return res.status(400).json({ message: 'Invalid credentials' });
 
     const token = crew.generateAuthToken();
-    res.json({ token, role: 'Crew' });
+    res.json({ token, role: 'Crew'});
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });
   }

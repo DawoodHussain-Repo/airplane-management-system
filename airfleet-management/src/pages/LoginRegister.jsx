@@ -35,6 +35,7 @@ const LoginRegister = () => {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('role', response.data.role);
         localStorage.setItem('PassID', response.data.userId); // Set the PassID in localStorage
+        localStorage.setItem('crewEmail', response.data.email); // Set the PassID in localStorage
 
         setMessage('Login successful! Redirecting...');
         if (response.data.role === 'Admin') {

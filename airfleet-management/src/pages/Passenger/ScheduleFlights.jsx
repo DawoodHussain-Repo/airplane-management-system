@@ -1,14 +1,11 @@
 import React, { useState, useEffect } from "react";
+import airplane from "../../assets/images/airplane.png"; // Import the airplane icon
 
 const ScheduledFlights = () => {
-  // State to hold the flight data
   const [flights, setFlights] = useState([]);
-  
-  // State for loading and error handling
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Fetch flights from the backend API
   useEffect(() => {
     const fetchFlights = async () => {
       try {
@@ -17,7 +14,6 @@ const ScheduledFlights = () => {
           throw new Error("Failed to fetch flights");
         }
         const data = await response.json();
-        // Set flights data
         setFlights(data);
       } catch (err) {
         setError(err.message);
@@ -29,48 +25,58 @@ const ScheduledFlights = () => {
     fetchFlights();
   }, []);
 
-  // Format the departure time
   const formatTime = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString();
   };
 
-  // Helper function to determine flight status color
   const getStatusColor = (status) => {
     switch (status) {
       case "In Air":
-        return "text-blue-500"; // Blue for flights in the air
+        return "bg-blue-500 text-white"; // Blue for flights in the air
       case "Delayed":
-        return "text-yellow-500"; // Yellow for delayed flights
+        return "bg-yellow-500 text-white"; // Yellow for delayed flights
       case "Scheduled":
-        return "text-green-500"; // Green for scheduled flights
+        return "bg-accent-orange-light text-white"; // Green for scheduled flights
       case "Completed":
-        return "text-gray-500"; // Gray for completed flights
+        return "bg-green-500 text-white"; // Gray for completed flights
       case "Cancelled":
-        return "text-red-500"; // Red for cancelled flights
+        return "bg-red-500 text-white"; // Red for cancelled flights
       default:
-        return "text-gray-300"; // Default gray color for unknown status
+        return "bg-gray-300 text-black"; // Default gray color for unknown status
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <div className="max-w-5xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-4">All Flights</h2>
+    <div className="min-h-screen bg-white p-6">
+      {/* Main Container */}
+      <h2 className="text-3xl font-bold mb-4 text-black text-center">Scheduled Flights</h2>
 
+      <div className="max-w-7xl mx-auto bg-white p-6 text-secondary rounded-lg shadow-lg border-4 border-black">
+     
         {/* Loading and error handling */}
         {loading && <p className="text-center text-gray-400">Loading flights...</p>}
         {error && <p className="text-center text-red-500">{error}</p>}
 
-        {/* Flight Details */}
-        <div className="space-y-6">
+        {/* Flight Cards in 3x3 Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 cursor-pointer  lg:grid-cols-3 gap-6">
           {flights.map((flight) => (
-            <div key={flight._id} className="bg-gray-700 p-6 rounded-lg shadow-md hover:bg-gray-600">
-              <h3 className="text-xl font-semibold">Flight {flight.flightNumber} - {flight.destination}</h3>
-              <p className="text-sm text-gray-400">Departure: {formatTime(flight.departureTime)}</p>
-              <p className={`text-sm ${getStatusColor(flight.status)}`}>
-                Status: {flight.status}
-              </p>
+            <div
+              key={flight._id}
+              className="bg-gray-200 p-6 rounded-lg shadow-md border border-gray-400 flex items-center space-x-4 hover:bg-gray-300 transition-all duration-300"
+            >
+              {/* Airplane Icon */}
+              <img src={airplane} alt="Airplane" className="w-12 h-12" />
+
+              {/* Flight Details */}
+              <div className="flex-1">
+                <h3 className="text-xl font-semibold">{flight.flightNumber} - {flight.destination}</h3>
+                <p className="text-sm text-gray-400">Departure: {formatTime(flight.departureTime)}</p>
+                {/* Status Label */}
+                <span className={`inline-block text-sm font-semibold py-1 px-3 rounded-full ${getStatusColor(flight.status)}`}>
+                  {flight.status}
+                </span>
+              </div>
             </div>
           ))}
         </div>

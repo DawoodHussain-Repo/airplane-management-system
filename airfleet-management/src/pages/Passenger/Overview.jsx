@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { FaServicestack, FaConciergeBell, FaStore, FaWifi } from "react-icons/fa"; // Importing FA icons
 
 const AirportOverview = () => {
   const [airportServices, setAirportServices] = useState([]);
@@ -18,13 +19,6 @@ const AirportOverview = () => {
         axios.get("http://localhost:5000/api/airport/amenities")
       ]);
 
-      // Check the structure of the response data
-      console.log("Services Response: ", servicesResponse.data);
-      console.log("Lounges Response: ", loungesResponse.data);
-      console.log("Shops Response: ", shopsResponse.data);
-      console.log("Amenities Response: ", amenitiesResponse.data);
-
-      // Ensure the responses are arrays before setting the state
       setAirportServices(servicesResponse.data || []);
       setAirportLounges(loungesResponse.data || []);
       setAirportShops(shopsResponse.data || []);
@@ -32,7 +26,6 @@ const AirportOverview = () => {
 
       setLoading(false);
     } catch (err) {
-      console.error("Error fetching data:", err);
       setError("There was an error fetching the data.");
       setLoading(false);
     }
@@ -62,28 +55,24 @@ const AirportOverview = () => {
     );
   }
 
-  // Check if the data is properly set in the state
-  console.log("State after fetching data:", {
-    airportServices,
-    airportLounges,
-    airportShops,
-    airportAmenities
-  });
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-800 to-gray-600 text-white p-6">
-      <div className="max-w-4xl mx-auto bg-gray-800 p-6 rounded-lg shadow-lg">
-        <h2 className="text-3xl font-bold mb-6 text-center">Airport Overview</h2>
+    <div className="min-h-screen bg-white text-black p-6">
+      <h2 className="text-4xl font-bold mb-6 text-center">Airport Overview</h2>
 
+      <div className="max-w-7xl mx-auto bg-white p-8 rounded-lg shadow-lg border-4 border-black">
+        
         {/* Airport Services */}
         <section className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Airport Services</h3>
-          <div className="space-y-4">
+          <h3 className="text-3xl font-semibold mb-6 text-center">Airport Services <FaServicestack className="inline text-blue-500 text-4xl ml-2" /></h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {airportServices.length > 0 ? (
               airportServices.map((service) => (
-                <div key={service._id} className="bg-gray-700 p-4 rounded-lg shadow-md">
-                  <h4 className="text-xl font-semibold">{service.name}</h4>
-                  <p className="text-sm text-gray-400">{service.description}</p>
+                <div key={service._id} className="bg-gray-200 p-6 rounded-lg shadow-md border-2 text-white border-gray-600 hover:scale-105 transform transition-all duration-200">
+                  <div className="flex items-center mb-4">
+                    <FaConciergeBell className="text-4xl text-green-400 mr-4" />
+                    <h4 className="text-xl font-semibold text-secondary">{service.name}</h4>
+                  </div>
+                  <p className="text-sm text-gray-700">{service.description}</p>
                 </div>
               ))
             ) : (
@@ -94,14 +83,17 @@ const AirportOverview = () => {
 
         {/* Airport Lounges */}
         <section className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Airport Lounges</h3>
-          <div className="space-y-4">
+          <h3 className="text-3xl font-semibold mb-6 text-center">Airport Lounges <FaConciergeBell className="inline text-accent-yellow text-4xl ml-2" /></h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {airportLounges.length > 0 ? (
               airportLounges.map((lounge) => (
-                <div key={lounge._id} className="bg-gray-700 p-4 rounded-lg shadow-md">
-                  <h4 className="text-xl font-semibold">{lounge.name}</h4>
-                  <p className="text-sm text-gray-400">{lounge.description}</p>
-                  <p className="text-sm text-yellow-400">Location: {lounge.location}</p>
+                <div key={lounge._id} className="bg-gray-200 p-6 rounded-lg shadow-md border-2 border-gray-600 hover:scale-105 transform transition-all duration-200">
+                  <div className="flex items-center mb-4">
+                    <FaConciergeBell className="text-4xl text-accent-yellow mr-4" />
+                    <h4 className="text-xl text-secondary font-semibold">{lounge.name}</h4>
+                  </div>
+                  <p className="text-sm text-gray-700">{lounge.description}</p>
+                  <p className="text-sm text-white px-2 mt-2 rounded-full bg-accent-yellow w-max">Location: {lounge.location}</p>
                 </div>
               ))
             ) : (
@@ -112,30 +104,36 @@ const AirportOverview = () => {
 
         {/* Airport Shops */}
         <section className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Airport Shops</h3>
-          <div className="space-y-4">
+          <h3 className="text-3xl font-semibold mb-6 text-center ">Airport Shops <FaStore className="inline text-secondary text-4xl ml-2" /></h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {airportShops.length > 0 ? (
               airportShops.map((shop) => (
-                <div key={shop._id} className="bg-gray-700 p-4 rounded-lg shadow-md">
-                  <h4 className="text-xl font-semibold">{shop.name}</h4>
-                  <p className="text-sm text-gray-400">{shop.description}</p>
+                <div key={shop._id} className="bg-gray-200 text-secondary p-6 rounded-lg shadow-md border-2 border-gray-600 hover:scale-105 transform transition-all duration-200">
+                  <div className="flex items-center mb-4">
+                    <FaStore className="text-4xl text-blue-400 mr-4" />
+                    <h4 className="text-xl font-semibold">{shop.name}</h4>
+                  </div>
+                  <p className="text-sm text-gray-700">{shop.description}</p>
                 </div>
               ))
             ) : (
-              <p className="text-gray-400">No airport shops available.</p>
+              <p className="text-gray-700">No airport shops available.</p>
             )}
           </div>
         </section>
 
         {/* Airport Amenities */}
         <section className="mb-8">
-          <h3 className="text-2xl font-semibold mb-4">Airport Amenities</h3>
-          <div className="space-y-4">
+          <h3 className="text-3xl font-semibold mb-6 text-center ">Airport Amenities <FaWifi className="inline text-purple-400 text-4xl ml-2" /></h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {airportAmenities.length > 0 ? (
               airportAmenities.map((amenity) => (
-                <div key={amenity._id} className="bg-gray-700 p-4 rounded-lg shadow-md">
-                  <h4 className="text-xl font-semibold">{amenity.name}</h4>
-                  <p className="text-sm text-gray-400">{amenity.description}</p>
+                <div key={amenity._id} className="bg-gray-200 text-secondary p-6 rounded-lg shadow-md border-2 border-gray-600 hover:scale-105 transform transition-all duration-200">
+                  <div className="flex items-center mb-4">
+                    <FaWifi className="text-4xl text-purple-400 mr-4" />
+                    <h4 className="text-xl font-semibold">{amenity.name}</h4>
+                  </div>
+                  <p className="text-sm text-gray-700">{amenity.description}</p>
                 </div>
               ))
             ) : (

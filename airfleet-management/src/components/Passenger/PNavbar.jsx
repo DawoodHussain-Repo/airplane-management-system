@@ -43,22 +43,12 @@ const PassengerNavbar = () => {
             </li>
           ))}
 
-          {/* Loyalty Link with Ticket Icon */}
-          <li>
-            <NavLink
-              to="/passenger/loyalty"
-              className="nav-link text-black py-2 px-4 flex items-center transition-all duration-300 ease-in-out hover:text-secondary"
-              activeClassName="text-secondary underline"
-            >
-          
-              Loyalty
-            </NavLink>
-          </li>
+       
 
           {/* User and Notifications Icons */}
           <li>
             <NavLink to="/passenger/profile">
-              <FaUserAlt size={24} className="text-secondary" />
+              <FaUserAlt size={24} className="text-secondary hover:text-gray-800" />
             </NavLink>
           </li>
         
@@ -105,7 +95,6 @@ const PassengerNavbar = () => {
           {[
             { label: "Dashboard", path: "/passenger/dashboard" },
             { label: "Booking", path: "/passenger/booking" },
-            { label: "Seats", path: "/passenger/seat-selection" },
             { label: "Flight Information", path: "/passenger/flight-info" },
             { label: "History", path: "/passenger/history" },
             { label: "Airport", path: "/passenger/airport" },
@@ -124,15 +113,7 @@ const PassengerNavbar = () => {
           ))}
 
           {/* Loyalty Link with Icon */}
-          <NavLink
-            to="/passenger/loyalty"
-            className="text-black py-3 px-6 w-full flex items-center justify-center transition-all duration-300 ease-in-out hover:text-secondary"
-            onClick={() => setMenuOpen(false)}
-            activeClassName="text-secondary underline"
-          >
-          
-            Loyalty
-          </NavLink>
+         
 
         
 

@@ -46,6 +46,7 @@ exports.loginUser = async (req, res) => {
       token,
       role: user.role,
       userId: user._id, // Add this line to send the user ID (passenger ID) to the client
+      email: user.email,
     });
   } catch (error) {
     res.status(500).json({ message: 'Error logging in', error: error.message });
