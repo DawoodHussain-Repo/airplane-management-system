@@ -24,6 +24,8 @@ connectDB().then(() => {
   console.error('Failed to connect to MongoDB:', error);
   process.exit(1); // Exit the process if the DB connection fails
 });
+// Explicitly handle OPTIONS preflight requests
+app.options('*', cors()); // Handle preflight requests for all routes
 
 // Enable CORS for all origins temporarily (use specific origins for production)
 app.use(cors({
@@ -32,8 +34,7 @@ app.use(cors({
   credentials: true
 }));
 
-// Explicitly handle preflight OPTIONS requests to ensure CORS headers are applied
-app.options('*', cors());
+
 
 // Middleware to parse JSON bodies
 app.use(express.json());
