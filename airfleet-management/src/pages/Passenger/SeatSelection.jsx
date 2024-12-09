@@ -21,7 +21,7 @@ const SeatSelection = () => {
   useEffect(() => {
     const fetchFlightData = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/flights/${flightId}`);
+        const response = await axios.get(`https://airplane-management-system-chi.vercel.app/api/flights/${flightId}`);
         const flight = response.data;
 
         setFlightData(flight);
@@ -84,7 +84,7 @@ const SeatSelection = () => {
 
     const seatNumbers = selectedSeats.map((seat) => `${seat.row}${seat.seat}`);
     try {
-      await axios.post("http://localhost:5000/api/bookings/book", {
+      await axios.post("https://airplane-management-system-chi.vercel.app/api/bookings/book", {
         passengerId,
         flightId,
         seatNumbers,
