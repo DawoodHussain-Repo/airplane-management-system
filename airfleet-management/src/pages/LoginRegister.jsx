@@ -48,7 +48,7 @@ const LoginRegister = () => {
           setMessage('Access denied. Unauthorized role.');
         }
       } else {
-        const response = await axios.post('http://localhost:5000/api/auth/register', {
+        const response = await axios.post('https://airplane-management-system-chi.vercel.app/api/auth/register', {
           role: formData.role,
           firstName: formData.firstName,
           lastName: formData.lastName,
