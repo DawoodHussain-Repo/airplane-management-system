@@ -64,7 +64,7 @@ const ProfileUpdate = () => {
     // Update the profile using PUT request
     const userId = localStorage.getItem("PassID");
     axios
-      .put(`http://localhost:5000/api/passengers/update/${userId}`, {
+      .put(`https://airplane-management-system-chi.vercel.app/api/passengers/update/${userId}`, {
         firstName: formData.fullName.split(" ")[0], // Extract first name from full name
         lastName: formData.fullName.split(" ")[1], // Extract last name from full name
         email: formData.email,
