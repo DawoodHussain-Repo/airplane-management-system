@@ -18,7 +18,7 @@ const LandingPage = () => {
       try {
         const response = await axios.get("https://api.aviationstack.com/v1/flights", {
           params: {
-            access_key: "cb5b6e526d888995f000d3ca6fca224e", // Your API key
+            access_key: "d3e0db09f25f8190c59660e177761072", // Your API key
             limit: 100, // Adjust the limit if needed
           },
         });
