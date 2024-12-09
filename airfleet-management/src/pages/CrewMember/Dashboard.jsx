@@ -14,8 +14,8 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const flightResponse = await axios.get("http://localhost:5000/api/flights");
-        const notificationResponse = await axios.get(`http://localhost:5000/api/notifications/byEmail/${crewEmail}`);
+        const flightResponse = await axios.get("https://airplane-management-system-chi.vercel.app/api/flights");
+        const notificationResponse = await axios.get(`https://airplane-management-system-chi.vercel.app/api/notifications/byEmail/${crewEmail}`);
 
         setAssignedFlights(flightResponse.data.slice(0, 3));
         setOtherFlights(flightResponse.data.slice(3));
