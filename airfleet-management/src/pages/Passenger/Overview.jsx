@@ -13,10 +13,10 @@ const AirportOverview = () => {
   const fetchAirportData = async () => {
     try {
       const [servicesResponse, loungesResponse, shopsResponse, amenitiesResponse] = await Promise.all([
-        axios.get("http://localhost:5000/api/airport/services"),
-        axios.get("http://localhost:5000/api/airport/lounges"),
-        axios.get("http://localhost:5000/api/airport/shops"),
-        axios.get("http://localhost:5000/api/airport/amenities")
+        axios.get("https://airplane-management-system-chi.vercel.app/api/airport/services"),
+        axios.get("https://airplane-management-system-chi.vercel.app/api/airport/lounges"),
+        axios.get("https://airplane-management-system-chi.vercel.app/api/airport/shops"),
+        axios.get("https://airplane-management-system-chi.vercel.app/api/airport/amenities")
       ]);
 
       setAirportServices(servicesResponse.data || []);
