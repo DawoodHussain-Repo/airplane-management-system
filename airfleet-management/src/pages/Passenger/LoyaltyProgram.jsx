@@ -15,7 +15,7 @@ const LoyaltyProgram = () => {
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/users/loyalty/${userId}`);
+        const response = await axios.get(`https://airplane-management-system-chi.vercel.app/api/users/loyalty/${userId}`);
         setPoints(response.data.loyaltyPoints);
         setLoading(false);
       } catch (err) {
