@@ -16,7 +16,7 @@ const FlightSchedule = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [editFlightId, setEditFlightId] = useState(null);
 
-  const API_URL = "http://localhost:5000/api/flights";
+  const API_URL = "https://airplane-management-system-chi.vercel.app/api/flights";
 
   useEffect(() => {
     fetchFlights();
