@@ -20,7 +20,7 @@ const ProfileUpdate = () => {
     if (userId) {
       // Fetch user data from the backend
       axios
-        .get(`http://localhost:5000/api/passengers/profile/${userId}`)
+        .get(`https://airplane-management-system-chi.vercel.app/api/passengers/profile/${userId}`)
         .then((response) => {
           const userData = response.data.user;
           
