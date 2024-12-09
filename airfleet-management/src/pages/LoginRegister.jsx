@@ -27,7 +27,7 @@ const LoginRegister = () => {
 
     try {
       if (isLogin) {
-        const response = await axios.post('http://localhost:5000/api/auth/login', {
+        const response = await axios.post('https://airplane-management-system-chi.vercel.app/api/auth/login', {
           email: formData.email,
           password: formData.password,
         });
